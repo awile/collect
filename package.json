@@ -1,0 +1,24 @@
+{
+  "name": "collect",
+  "version": "1.0.0",
+  "main": "dist/electron.js",
+  "repository": "https://github.com/awile/collect.git",
+  "author": "Adam Wiles <adam.wiles@newscred.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "rsync -a src/electron.js dist/ && concurrently 'yarn run start-react' 'wait-on http://localhost:3000 && electron .'",
+    "start-react": "parcel -p 3000 ./src/index.html"
+  },
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.2.0",
+    "electron": "^9.0.5",
+    "parcel-bundler": "^1.12.4",
+    "prop-types": "^15.7.2",
+    "sass": "^1.26.9",
+    "wait-on": "^5.0.1"
+  }
+}

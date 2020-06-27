@@ -1,0 +1,15 @@
+
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 900,
+    height: 680,
+    titleBarStyle: 'hiddenInset'
+  });
+
+  mainWindow.loadURL('http://localhost:3000');
+}
+
+app.on('ready', createWindow);

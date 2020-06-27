@@ -1,0 +1,29 @@
+
+.clt-NavBar {
+  width: 100%;
+  background: #fff;
+  border-bottom: solid 1px #d3d3d3;
+  position: fixed;
+  top: 0;
+  height: 36px;
+  z-index: 1;
+  -webkit-app-region: drag;
+
+  &-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  &-title {
+    margin-left: 100px;
+  }
+
+  &-divider {
+    margin-left: 10px;
+  }
+
+  &-current {
+    margin-left: 10px;
+  }
+}

@@ -1,0 +1,18 @@
+
+.clt-Grid {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  width: calc(100% - 100px);
+  position: absolute;
+  left: 100px;
+
+  &-container {
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-gap: 10px;
+    width: calc(100% - 60px);
+    height: 100%;
+    padding: 15px;
+  }
+}

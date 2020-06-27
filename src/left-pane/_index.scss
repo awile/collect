@@ -1,0 +1,31 @@
+
+.clt-LeftPane {
+  position: fixed;
+  top: 36px;
+  left: 0;
+  border-right: 1px solid #d3d3d3;
+  width: 100px;
+  height: 100vh;
+
+  &-list-container {
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    margin: 0;
+
+  }
+
+  &-item {
+    margin: 8px 0;
+    cursor: pointer;
+  }
+
+  &-item:hover {
+    color: #d3d3d3;
+  }
+
+  &--active {
+    text-decoration: underline;
+  }
+}
