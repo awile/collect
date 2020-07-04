@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PhotoBlock from './PhotoBlock';
 import { IPCRenderer } from '../ipc';
+import { UploadWrapper } from  '../library/';
 import moment from 'moment';
 
 import './_index.scss';
@@ -12,8 +13,9 @@ class Grid extends Component {
     super();
 
     this.state = {
-      photos: [111]
+      photos: []
     };
+    this.onFileUpload = this.onFileUpload.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +29,10 @@ class Grid extends Component {
     }
   }
 
+  onFileUpload() {
+    this.getPhotos();
+  }
+
   async getPhotos() {
     const { selectedLabelId } = this.props;
     let query = {};
@@ -35,7 +41,7 @@ class Grid extends Component {
     }
     const responseChannel = `response-photos-${moment().toISOString()}`;
     IPCRenderer.once(responseChannel, (event, photos) => this.setState({ photos }));
-    IPCRenderer.send('photos-request', ['SEARCH', query, responseChannel]);
+    IPCRenderer.send('photos-request', { url: 'SEARCH', body: query, responseChannel });
   }
 
   render() {
@@ -43,11 +49,11 @@ class Grid extends Component {
 
     return (
       <div className='clt-Grid'>
-        <div className='clt-Grid-container'>
-          {
-            photos.map(photo => <PhotoBlock />)
-          }
-        </div>
+        <UploadWrapper onUpload={this.onFileUpload}>
+          <div className='clt-Grid-container'>
+            { photos.map(photo => <PhotoBlock photo={photo} />) }
+          </div>
+        </UploadWrapper>
       </div>
     );
   }

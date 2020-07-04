@@ -7,11 +7,18 @@ import './_photo-block.scss';
 class PhotoBlock extends Component {
 
   render() {
+    const { photo } = this.props;
+    if (!photo) { return null; }
+
+    const { data } = photo;
 
     return (
       <div className='clt-PhotoBlock'>
         <div className='clt-PhotoBlock-container'>
-          <img width='130' height='130' src='https://www.bronze56k.com/nav/BRONZE_3D_600x_LOGO_1.gif' />
+          <img
+            width='130'
+            height='130'
+            src={data} />
         </div>
       </div>
     );

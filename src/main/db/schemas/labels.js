@@ -1,7 +1,7 @@
 
 import config from '../config';
 import { getUuid } from '../utils';
-import moment from 'moment';
+import * as moment from 'moment';
 
 const LABELS = config.tables.LABELS;
 

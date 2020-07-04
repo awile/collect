@@ -12,7 +12,6 @@ const conn = knex({
 });
 
 export async function initDB() {
-  console.log('init db')
   await setupDBTables(conn);
 }
 

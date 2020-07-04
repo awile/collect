@@ -3,6 +3,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { initDB } from './main/db/';
 import { setupListeners, teardownListeners } from './main/';
+import { ipcMain } from 'electron'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -13,11 +14,16 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  mainWindow.webContents.once('dom-ready', () => {
-    initDB().then(() => {
-      mainWindow.webContents.send('ready')
-    });
+
+
+  let mainReady = false;
+  ipcMain.on('main-status-check', (event, args) => {
+      event.reply('main-status', { status: mainReady ? 'ok' : 'not ok' });
   });
+  mainWindow.webContents.once('dom-ready', () => {
+    initDB().then(() => { mainReady = true; });
+  });
+
   mainWindow.loadURL('http://localhost:3000');
 }
 

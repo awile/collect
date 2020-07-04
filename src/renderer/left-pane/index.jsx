@@ -24,12 +24,12 @@ class LeftPane extends Component {
     const query = {};
     const responseChannel = `response-labels-${moment().toISOString()}`;
     IPCRenderer.once(responseChannel, (event, labels) => this.setState({ labels }));
-    IPCRenderer.send('labels-request', ['SEARCH', query, responseChannel]);
+    IPCRenderer.send('labels-request', { url: 'SEARCH', body: query, responseChannel });
   }
 
   handleLabels() {
     const query = {};
-    IPCRenderer.send('labels-request', ['GET', query]);
+    IPCRenderer.send('labels-request', { url: 'GET', body: query});
   }
 
   render() {

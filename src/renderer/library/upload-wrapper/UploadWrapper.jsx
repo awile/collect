@@ -1,6 +1,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IPCRenderer } from '../../ipc';
+import moment from 'moment';
+
+import './_upload-wrapper.scss'
 
 class UploadWrapper extends React.Component {
   constructor(props) {
@@ -11,6 +15,10 @@ class UploadWrapper extends React.Component {
     };
 
     this.ref = React.createRef();
+    this.handleDrop = this.handleDrop.bind(this);
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragLeave = this.handleDragLeave.bind(this);
+    this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
   }
 
@@ -31,39 +39,46 @@ class UploadWrapper extends React.Component {
   }
 
   handleDragEnter(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ fileIsHovering: true });
   }
 
   handleDragLeave(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ fileIsHovering: false });
   }
 
   handleDragOver(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ fileIsHovering: true });
   }
 
   handleDrop(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     const files = e.dataTransfer.files;
     ([...files]).forEach(file => this.handleFile(file));
+    this.setState({ fileIsHovering: false });
   }
 
   handleFile(file) {
+    const { onUpload } = this.props;
     const reader = new FileReader();
     reader.onload = (event) => {
-      console.log('event', event)
       const bits = event.target.result;
-      console.log('bits', bits)
-      // const obj = {
-      //   created: new Date(),
-      //   data: bits
-      // };
+      const newPhoto = {
+        name: `new-photo-${moment().toISOString()}`,
+        file_type: 'png',
+        data: bits
+      }
+      const responseChannel = `response-photos-${moment().toISOString()}`;
+      IPCRenderer.once(responseChannel, (event, result) => onUpload && onUpload());
+      IPCRenderer.send('photos-request', { url: 'CREATE', body: newPhoto, responseChannel });
     }
-    reader.readAsBinaryString(file);
+    reader.readAsDataURL(file);
   }
 
   render() {
@@ -72,6 +87,9 @@ class UploadWrapper extends React.Component {
 
     return (
       <div className={`lib-UploadWrapper ${fileIsHovering ? 'lib-UploadWrapper--active': ''}`} ref={this.ref}>
+        <div className='lib-UploadWrapper-message'>
+          <div>Drop File to Upload</div>
+        </div>
         {children}
       </div>
     );
@@ -79,6 +97,7 @@ class UploadWrapper extends React.Component {
 }
 
 UploadWrapper.propTypes = {
+  onUpload: PropTypes.func
 };
 
 export default UploadWrapper;

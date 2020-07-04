@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import NavBar from './nav-bar/index';
 import LeftPane from './left-pane/index';
 import Grid from './grid/index';
-import { UploadWrapper } from  './library/';
 import { IPCRenderer } from './ipc';
 
 class App extends Component {
@@ -18,9 +17,17 @@ class App extends Component {
       selectedLabel: null
     };
     this.onChange = this.onChange.bind(this);
-    IPCRenderer.on('ready', () => {
-      this.setState({ loading: false });
+
+    const statusCheckChannel = 'main-status-check';
+    IPCRenderer.on('main-status', (event, check) => {
+      if (check.status === 'ok') {
+        this.setState({ loading: false });
+        IPCRenderer.removeAllListeners('main-status');
+      } else {
+        IPCRenderer.send(statusCheckChannel, []);
+      }
     });
+    IPCRenderer.send(statusCheckChannel, []);
   }
 
   onChange(label) {
@@ -34,12 +41,10 @@ class App extends Component {
       <div className='clt-App'>
         <NavBar selectedLabelName={selectedLabel ? selectedLabel.name : ''} />
         { loading ?
-          <div>loading...</div> :
+          <div className='clt-App-loading'>loading...</div> :
           <div className='clt-App-mainContainer'>
             <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
-            <UploadWrapper>
-              <Grid selectedLabelId={selectedLabel && selectedLabel.id} />
-            </UploadWrapper>
+            <Grid selectedLabelId={selectedLabel && selectedLabel.id} />
           </div>
         }
       </div>

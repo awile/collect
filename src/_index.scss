@@ -19,6 +19,16 @@ html, body {
     display: block;
   }
 
+  &-loading {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   &-mainContainer {
     position: absolute;
     top: 36px;

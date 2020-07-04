@@ -1,10 +1,13 @@
 
 import { PhotoService } from '../services/';
 
-export async function handlePhotoRequests(event, args) {
-  const [endpoint, params, responseChannel] = args;
-  if (endpoint === 'SEARCH') {
-    const photos = await PhotoService.search(params || {});
+export async function handlePhotoRequests(event, request) {
+  const { url, body, responseChannel } = request;
+  if (url === 'SEARCH') {
+    const photos = await PhotoService.search(body || {});
     event.reply(responseChannel, photos);
+  } else if (url === 'CREATE') {
+    const result = await PhotoService.create(body);
+    event.reply(responseChannel, result);
   }
 }
