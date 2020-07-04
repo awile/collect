@@ -2,21 +2,48 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PhotoBlock from './PhotoBlock';
+import { PhotoService } from '../services/';
 
 import './_index.scss';
 
 class Grid extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      photos: [111]
+    };
+  }
+
+  componentDidMount() {
+    this.getPhotos();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedLabelId } = this.props;
+    if (prevProps.selectedLabelId !== selectedLabelId) {
+      this.getPhotos();
+    }
+  }
+
+  async getPhotos() {
+    const { selectedLabelId } = this.props;
+    let query = {};
+    if (selectedLabelId) {
+      query.labels = [selectedLabelId];
+    }
+    const photos = await PhotoService.search(query);
+    this.setState({ photos });
+  }
 
   render() {
-    const { text } = this.props;
-    const photos = new Array(20).fill(1);
+    const { photos } = this.state;
 
     return (
       <div className='clt-Grid'>
         <div className='clt-Grid-container'>
           {
-            photos.map(photo =>
-              <PhotoBlock />)
+            photos.map(photo => <PhotoBlock />)
           }
         </div>
       </div>
@@ -25,7 +52,7 @@ class Grid extends Component {
 }
 
 Grid.propTypes = {
-  text: PropTypes.string
+  selectedLabelId: PropTypes.string
 }
 
 export default Grid;

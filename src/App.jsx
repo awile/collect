@@ -11,24 +11,24 @@ class App extends Component {
     super();
 
     this.state = {
-      text: ''
+      selectedLabel: null
     };
     this.onChange = this.onChange.bind(this);
   }
 
-  onChange(text) {
-    this.setState({ text });
+  onChange(label) {
+    this.setState({ selectedLabel: label });
   }
 
   render() {
-    const { text } = this.state;
+    const { selectedLabel } = this.state;
 
     return (
       <div className='clt-App'>
-        <NavBar text={text} />
+        <NavBar selectedLabelName={selectedLabel ? selectedLabel.name : ''} />
         <div className='clt-App-mainContainer'>
-          <LeftPane text={text} onChange={this.onChange} />
-          <Grid text={text} />
+          <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
+          <Grid selectedLabelId={selectedLabel && selectedLabel.id} />
         </div>
       </div>
     );

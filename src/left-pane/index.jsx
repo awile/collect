@@ -1,23 +1,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { LabelService } from '../services/';
 
 import './_index.scss';
 
 class LeftPane extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      labels: []
+    };
+  }
+
+  async componentDidMount() {
+    const labels = await LabelService.search();
+    this.setState({ labels });
+  }
+
 
   render() {
-    const { text, onChange } = this.props;
+    const { labels } = this.state;
+    const { selectedLabel, onChange } = this.props;
     const types = ['photos', 'videos', 'types'];
 
     return (
       <div className='clt-LeftPane'>
         <div className='clt-LeftPane-list-container'>
-          { types.map(type =>
+          { labels.map(label =>
             <span
-              key={type}
-              className={`clt-LeftPane-item ${type === text ? 'clt-LeftPane--active' : ''}`}
-              onClick={() => onChange(type)}>
-              {type}
+              key={label.id}
+              className={`clt-LeftPane-item ${selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}`}
+              onClick={() => onChange(label)}>
+              {label.name}
             </span>)
           }
           <hr />
@@ -29,7 +44,10 @@ class LeftPane extends Component {
 }
 
 LeftPane.propTypes = {
-  text: PropTypes.string,
+  selectedLabel: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string
+  }),
   onChange: PropTypes.func
 };
 
