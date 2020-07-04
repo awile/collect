@@ -18,13 +18,16 @@
     "knex"
   ],
   "scripts": {
+    "clean": "rm -rf dist/",
     "postinstall": "install-app-deps",
-    "start": "rsync -a src/electron.js dist/ && concurrently 'yarn run start-react' 'wait-on http://localhost:3000 && electron .'",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "start-react": "parcel -p 3000 ./src/index.html",
-    "release": "build"
+    "release": "build",
+    "start": "yarn run clean && yarn run start-main && concurrently 'yarn run start-renderer' 'wait-on http://localhost:3000 && electron .'",
+    "start-main": "tsc --p ./tsconfig.json",
+    "start-renderer": "parcel -p 3000 ./src/index.html"
   },
   "dependencies": {
+    "knex": "^0.21.1",
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -36,11 +39,11 @@
     "electron": "^9.0.5",
     "electron-builder": "^22.7.0",
     "electron-rebuild": "^1.11.0",
-    "knex": "^0.21.1",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-externals": "^0.5.0",
     "prop-types": "^15.7.2",
     "sass": "^1.26.9",
+    "typescript": "^3.9.6",
     "wait-on": "^5.0.1"
   }
 }

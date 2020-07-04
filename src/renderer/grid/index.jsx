@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PhotoBlock from './PhotoBlock';
-import { PhotoService } from '../services/';
 
 import './_index.scss';
 
@@ -32,7 +31,7 @@ class Grid extends Component {
     if (selectedLabelId) {
       query.labels = [selectedLabelId];
     }
-    const photos = await PhotoService.search(query);
+    const photos = [];
     this.setState({ photos });
   }
 

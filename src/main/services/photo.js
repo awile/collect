@@ -1,6 +1,11 @@
 
-import { getConn } from '../db/';
-import { getUuid } from '../db/utils';
+import {
+  getConn,
+  getUuid,
+  Photos,
+  PhotoLabels
+} from '../db/';
+
 
 export async function search(params = {}) {
   const { size, offset, labels } = params;
@@ -10,15 +15,15 @@ export async function search(params = {}) {
 
   let query = null;
   if (labels) {
-    query = knex('photoLabels')
-      .join('photos', 'photoLabels.photo', 'photos.id')
+    query = knex(PhotoLabels)
+      .join(Photos, 'photoLabels.photo', 'photos.id')
       .select()
       .whereIn('photoLabels.label', labels)
       .offset(queryOffset)
       .limit(querySize)
       .orderBy('photos.created_at', 'desc');
   } else {
-    query = knex('photos')
+    query = knex(PhotosTable)
       .select()
       .offset(queryOffset)
       .limit(querySize)
@@ -32,7 +37,7 @@ export async function get(id) {
     throw new Error('retrieving a photo requires an id');
   }
   const knex = getConn();
-  const query = knex('photos').first().where('id', id);
+  const query = knex(Photos).first().where('id', id);
   return await query;
 }
 
@@ -42,7 +47,7 @@ export async function create(photo) {
   }
   const knex = getConn();
   const newPhoto = Object.assign(photo, { id: getUuid() });
-  const query = knex('photos').insert(newPhoto);
+  const query = knex(Photos).insert(newPhoto);
   const result = await query;
   return photo;
 }

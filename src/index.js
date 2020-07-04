@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import { initDB, getConn } from './db/index';
-import { PhotoService, LabelService, PhotoLabelService } from './services/';
+import App from './renderer/App';
 
-initDB().then(async () => {
-  ReactDOM.render(<App />, document.getElementById('root'));
-});
+// initDB().then(async () => {
+// });
+ReactDOM.render(<App />, document.getElementById('root'));

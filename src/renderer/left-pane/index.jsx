@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LabelService } from '../services/';
 
 import './_index.scss';
 
@@ -13,16 +12,17 @@ class LeftPane extends Component {
     };
   }
 
-  async componentDidMount() {
-    const labels = await LabelService.search();
+  componentDidMount() {
+    const labels = [{ id: '123', name: 'photos' }];
     this.setState({ labels });
   }
+
+  handle
 
 
   render() {
     const { labels } = this.state;
     const { selectedLabel, onChange } = this.props;
-    const types = ['photos', 'videos', 'types'];
 
     return (
       <div className='clt-LeftPane'>

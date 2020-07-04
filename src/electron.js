@@ -1,9 +1,10 @@
 
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import { initDB } from './main/db/';
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
     titleBarStyle: 'hiddenInset',
@@ -11,7 +12,11 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-
+  mainWindow.webContents.once('dom-ready', () => {
+    initDB().then(() => {
+      mainWindow.webContents.send('ready')
+    });
+  });
   mainWindow.loadURL('http://localhost:3000');
 }
 

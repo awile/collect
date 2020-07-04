@@ -1,6 +1,5 @@
 
-import { getConn } from '../db/';
-import { getUuid } from '../db/utils';
+import { getConn, getUuid, PhotoLabels } from '../db/';
 import * as LabelService from './label';
 import * as PhotoService from './photo';
 
@@ -24,6 +23,6 @@ export async function create(labelRelation) {
     label: label.id,
     photo: photo.id
   };
-  await knex('photoLabels').insert(newPhotoLabelRelation);
+  await knex(PhotoLabels).insert(newPhotoLabelRelation);
   return newPhotoLabelRelation;
 }

@@ -1,6 +1,9 @@
 
-import { getConn } from '../db/';
-import { getUuid } from '../db/utils';
+import {
+  getConn,
+  getUuid,
+  Labels
+} from '../db/';
 
 export async function search(params = {}) {
   const knex = getConn();
@@ -8,7 +11,7 @@ export async function search(params = {}) {
   const querySize = size || 10;
   const queryOffset = offset || 0;
 
-  const query = knex('labels')
+  const query = knex(Labels)
     .select()
     .offset(queryOffset)
     .limit(querySize)
@@ -21,7 +24,7 @@ export async function get(id) {
     throw new Error('retrieving a label requires an id');
   }
   const knex = getConn();
-  const query = knex('labels').first().where('id', id);
+  const query = knex(Labels).first().where('id', id);
   return await query;
 }
 
@@ -30,13 +33,13 @@ export async function update(newLabel) {
     throw new Error('Updating Label requires a name');
   }
   const knex = getConn();
-  const queryLabel = knex('labels').select().where('id', label.id);
+  const queryLabel = knex(Labels).select().where('id', label.id);
   const label = await queryLabel;
   if (!label) {
     throw new Error(`No label with id ${label.id} found`);
   }
   const updateLabel = Object.assign(label, newLabel);
-  const query = Labels
+  const query = knex(Labels)
     .where('id', updateLabel.id)
     .update(updateLabel);
   return await query;
@@ -48,7 +51,7 @@ export async function create(label) {
   }
   const knex = getConn();
   const newLabel = Object.assign(label, { id: getUuid() });
-  const query = knex('labels').insert(newLabel);
+  const query = knex(Labels).insert(newLabel);
   const result = await query;
   return label;
 }
