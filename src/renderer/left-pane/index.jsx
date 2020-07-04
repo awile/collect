@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { IPCRenderer } from '../ipc';
+import moment from 'moment';
 
 import './_index.scss';
 
@@ -15,10 +17,20 @@ class LeftPane extends Component {
   componentDidMount() {
     const labels = [{ id: '123', name: 'photos' }];
     this.setState({ labels });
+    this.getLabels();
   }
 
-  handle
+  getLabels() {
+    const query = {};
+    const responseChannel = `response-labels-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, (event, labels) => this.setState({ labels }));
+    IPCRenderer.send('labels-request', ['SEARCH', query, responseChannel]);
+  }
 
+  handleLabels() {
+    const query = {};
+    IPCRenderer.send('labels-request', ['GET', query]);
+  }
 
   render() {
     const { labels } = this.state;

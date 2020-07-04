@@ -23,7 +23,7 @@ export async function search(params = {}) {
       .limit(querySize)
       .orderBy('photos.created_at', 'desc');
   } else {
-    query = knex(PhotosTable)
+    query = knex(Photos)
       .select()
       .offset(queryOffset)
       .limit(querySize)

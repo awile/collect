@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PhotoBlock from './PhotoBlock';
+import { IPCRenderer } from '../ipc';
+import moment from 'moment';
 
 import './_index.scss';
 
@@ -31,8 +33,9 @@ class Grid extends Component {
     if (selectedLabelId) {
       query.labels = [selectedLabelId];
     }
-    const photos = [];
-    this.setState({ photos });
+    const responseChannel = `response-photos-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, (event, photos) => this.setState({ photos }));
+    IPCRenderer.send('photos-request', ['SEARCH', query, responseChannel]);
   }
 
   render() {

@@ -2,6 +2,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { initDB } from './main/db/';
+import { setupListeners, teardownListeners } from './main/';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -20,4 +21,12 @@ function createWindow() {
   mainWindow.loadURL('http://localhost:3000');
 }
 
-app.on('ready', createWindow);
+app.on('ready', () =>  {
+  setupListeners();
+  createWindow();
+});
+
+app.on('window-all-closed', () => {
+  teardownListeners();
+  app.quit()
+})
