@@ -5,6 +5,7 @@ import {
   Photos,
   PhotoLabels
 } from '../db/';
+import { writePhoto } from './utils';
 
 
 export async function search(params = {}) {
@@ -45,8 +46,14 @@ export async function create(photo) {
   if (!(photo.file_type && photo.name && photo.data)) {
     throw new Error('Photo requires fields: file_type, name, & data');
   }
+  const imageData = photo.data.replace(/^data:image\/\w+;base64,/, "");
+  const imagePath = await writePhoto(`${photo.name}.${photo.file_type}`, imageData);
   const knex = getConn();
-  const newPhoto = Object.assign(photo, { id: getUuid() });
+  const newPhoto = {
+    name: photo.name,
+    file_type: photo.file_type,
+    location: imagePath
+  };
   const query = knex(Photos).insert(newPhoto);
   const result = await query;
   return photo;

@@ -1,8 +1,7 @@
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, protocol } from 'electron';
 import path from 'path';
-import { initDB } from './main/db/';
-import { setupListeners, teardownListeners } from './main/';
+import { setupApp, setupListeners, teardownListeners } from './main/';
 import { ipcMain } from 'electron'
 
 function createWindow() {
@@ -11,7 +10,8 @@ function createWindow() {
     height: 680,
     titleBarStyle: 'hiddenInset',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     }
   });
 
@@ -21,7 +21,7 @@ function createWindow() {
       event.reply('main-status', { status: mainReady ? 'ok' : 'not ok' });
   });
   mainWindow.webContents.once('dom-ready', () => {
-    initDB().then(() => { mainReady = true; });
+    setupApp().then(() => { mainReady = true; });
   });
 
   mainWindow.loadURL('http://localhost:3000');
@@ -30,6 +30,13 @@ function createWindow() {
 app.on('ready', () =>  {
   setupListeners();
   createWindow();
+});
+
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('file', (request, callback) => {
+    const pathname = request.url.replace('file:///', '');
+    callback(pathname);
+  })
 });
 
 app.on('window-all-closed', () => {

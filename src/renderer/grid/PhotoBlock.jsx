@@ -10,7 +10,7 @@ class PhotoBlock extends Component {
     const { photo } = this.props;
     if (!photo) { return null; }
 
-    const { data } = photo;
+    const { location } = photo;
 
     return (
       <div className='clt-PhotoBlock'>
@@ -18,7 +18,7 @@ class PhotoBlock extends Component {
           <img
             width='130'
             height='130'
-            src={data} />
+            src={`file://${location}`} />
         </div>
       </div>
     );

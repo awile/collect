@@ -70,8 +70,8 @@ class UploadWrapper extends React.Component {
     reader.onload = (event) => {
       const bits = event.target.result;
       const newPhoto = {
-        name: `new-photo-${moment().toISOString()}`,
-        file_type: 'png',
+        name: file.name.split('.').slice(0, -1).join(''),
+        file_type: file.type.split('/')[1],
         data: bits
       }
       const responseChannel = `response-photos-${moment().toISOString()}`;

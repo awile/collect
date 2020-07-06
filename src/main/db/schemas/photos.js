@@ -14,7 +14,7 @@ export async function setupPhotosTable(knex) {
       table.string('name', 255);
       table.string('file_type', 10);
       table.string('created_at').defaultTo(moment().toISOString());
-      table.binary('data');
+      table.string('location', 255);
     });
     console.log('created photos table.');
   }
