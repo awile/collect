@@ -1,0 +1,20 @@
+
+.alp-AddLabelPlaceholder {
+  display: inline-flex;
+  width: 100%;
+  padding: 5px 0;
+
+  &-input {
+    width: 75%;
+  }
+
+  &-create {
+    padding: 0 4px;
+    width: 14px;
+  }
+
+  &-remove {
+    padding: 0 4px;
+    width: 14px;
+  }
+}

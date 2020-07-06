@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { IPCRenderer } from '../ipc';
+import { Button } from '../library/';
+import AddLabelPlaceholder from './add-label-placeholder/';
 import moment from 'moment';
 
 import './_index.scss';
@@ -12,6 +14,10 @@ class LeftPane extends Component {
     this.state = {
       labels: []
     };
+
+    this.handleAddLabel = this.handleAddLabel.bind(this);
+    this.onLabelCreate = this.onLabelCreate.bind(this);
+    this.onLabelRemove = this.onLabelRemove.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +33,23 @@ class LeftPane extends Component {
     IPCRenderer.send('labels-request', { url: 'SEARCH', body: query, responseChannel });
   }
 
+  handleAddLabel() {
+    const { labels } = this.state;
+    this.setState({ labels: [{ id: `${labels.length + 1}`, isPlaceholder: true }].concat(labels) });
+  }
+
+  onLabelCreate(oldLabel, newLabel) {
+    const { labels } = this.state;
+    const updatedLabels = labels.map(l => l.id === oldLabel.id ? newLabel : l);
+    this.setState({ labels: updatedLabels });
+  }
+
+  onLabelRemove(labelId) {
+    const { labels } = this.state;
+    const filteredLabels = labels.filter(l => l.id !== labelId);
+    this.setState({ labels: filteredLabels });
+  }
+
   handleLabels() {
     const query = {};
     IPCRenderer.send('labels-request', { url: 'GET', body: query});
@@ -38,14 +61,23 @@ class LeftPane extends Component {
 
     return (
       <div className='clt-LeftPane'>
+        <div className='clt-LeftPane-add-container'>
+          <Button onClick={this.handleAddLabel}>+ add label</Button>
+        </div>
         <div className='clt-LeftPane-list-container'>
           { labels.map(label =>
-            <span
-              key={label.id}
-              className={`clt-LeftPane-item ${selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}`}
-              onClick={() => onChange(label)}>
-              {label.name}
-            </span>)
+            label.isPlaceholder ?
+              <AddLabelPlaceholder
+                key={label.id}
+                label={label}
+                onCreate={this.onLabelCreate}
+                onRemove={this.onLabelRemove} /> :
+              <span
+                key={label.id}
+                className={`clt-LeftPane-item ${selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}`}
+                onClick={() => onChange(label)}>
+                {label.name}
+              </span>)
           }
           <hr />
           <span className='clt-LeftPane-item' onClick={() => onChange('')}>clear</span>

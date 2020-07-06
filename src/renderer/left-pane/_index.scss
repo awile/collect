@@ -7,8 +7,12 @@
   width: 150px;
   height: 100vh;
 
+  &-add-container {
+    padding: 10px 5px 0 20px;
+  }
+
   &-list-container {
-    padding: 10px 30px;
+    padding: 10px 5px 10px 20px;
     display: flex;
     flex-direction: column;
     align-content: flex-start;
@@ -23,6 +27,13 @@
 
   &-item:hover {
     color: #d3d3d3;
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none;
+  }
+  &-item:active {
+    color: #959595;
   }
 
   &--active {
