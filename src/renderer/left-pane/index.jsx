@@ -18,6 +18,8 @@ class LeftPane extends Component {
     this.handleAddLabel = this.handleAddLabel.bind(this);
     this.onLabelCreate = this.onLabelCreate.bind(this);
     this.onLabelRemove = this.onLabelRemove.bind(this);
+    this.handleLabelRemove = this.handleLabelRemove.bind(this);
+    this.handleLabelEdit = this.handleLabelEdit.bind(this);
   }
 
   componentDidMount() {
@@ -40,8 +42,12 @@ class LeftPane extends Component {
 
   onLabelCreate(oldLabel, newLabel) {
     const { labels } = this.state;
+    const { onChange, selectedLabel } = this.props;
     const updatedLabels = labels.map(l => l.id === oldLabel.id ? newLabel : l);
     this.setState({ labels: updatedLabels });
+    if (selectedLabel.id === newLabel.id) {
+      onChange(newLabel);
+    }
   }
 
   onLabelRemove(labelId) {
@@ -50,9 +56,23 @@ class LeftPane extends Component {
     this.setState({ labels: filteredLabels });
   }
 
-  handleLabels() {
-    const query = {};
-    IPCRenderer.send('labels-request', { url: 'GET', body: query});
+  handleLabelRemove(label) {
+    const responseChannel = `response-labels-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, (event, resp) => {
+      if (resp.deleted) {
+        const { labels } = this.state;
+        const filteredLabels = labels.filter(l => l.id !== label.id);
+        this.setState({ labels: filteredLabels });
+      }
+    });
+    IPCRenderer.send('labels-request', { url: 'DELETE', body: { id: label.id }, responseChannel });
+  }
+
+  handleLabelEdit(label) {
+    const { labels } = this.state;
+    const updatedLabels = labels.map(l =>
+      l.id === label.id ? Object.assign(l, { isPlaceholder: true }) : l);
+    this.setState({ labels: updatedLabels });
   }
 
   render() {
@@ -72,12 +92,20 @@ class LeftPane extends Component {
                 label={label}
                 onCreate={this.onLabelCreate}
                 onRemove={this.onLabelRemove} /> :
-              <span
+              <div
                 key={label.id}
-                className={`clt-LeftPane-item ${selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}`}
-                onClick={() => onChange(label)}>
-                {label.name}
-              </span>)
+                className='clt-LeftPane-item'>
+
+                <Button
+                  className={selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}
+                  onClick={() => onChange(label)}>
+                  {label.name}
+                </Button>
+                <div className='clt-LeftPane-options'>
+                  <Button className='clt-LeftPane-edit'onClick={() => this.handleLabelEdit(label)}>e</Button>
+                  <Button className='clt-LeftPane-delete'onClick={() => this.handleLabelRemove(label)}>X</Button>
+                </div>
+              </div>)
           }
           <hr />
           <span className='clt-LeftPane-item' onClick={() => onChange('')}>clear</span>

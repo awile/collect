@@ -20,6 +20,13 @@ class AddLabelPlaceholder extends React.Component {
     this.handleEnter = this.handleEnter.bind(this);
   }
 
+  componentDidMount() {
+    const { label } = this.props;
+    if (label && label.name) {
+      this.setState({ value: label.name });
+    }
+  }
+
   handleChange(event) {
     const text = event.target.value;
     this.setState({ value: text });
@@ -28,10 +35,18 @@ class AddLabelPlaceholder extends React.Component {
   handleCreate() {
     const { label, onCreate } = this.props;
     const { value } = this.state;
-    const body = { name: value };
     const responseChannel = `response-labels-${moment().toISOString()}`;
-    IPCRenderer.once(responseChannel, (event, newLabel) => onCreate(label, newLabel));
-    IPCRenderer.send('labels-request', { url: 'CREATE', body, responseChannel });
+    IPCRenderer.once(responseChannel, (event, newLabel) => {
+      onCreate(label, newLabel)
+    });
+    let body;
+    if (label.name) {
+      body = Object.assign(label, { name: value });
+      IPCRenderer.send('labels-request', { url: 'UPDATE', body, responseChannel });
+    } else {
+      body = { name: value };
+      IPCRenderer.send('labels-request', { url: 'CREATE', body, responseChannel });
+    }
   }
 
   handleEnter(e) {

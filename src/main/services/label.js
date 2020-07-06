@@ -33,16 +33,17 @@ export async function update(newLabel) {
     throw new Error('Updating Label requires a name');
   }
   const knex = getConn();
-  const queryLabel = knex(Labels).select().where('id', label.id);
+  const queryLabel = knex(Labels).first().where('id', newLabel.id);
   const label = await queryLabel;
   if (!label) {
     throw new Error(`No label with id ${label.id} found`);
   }
-  const updateLabel = Object.assign(label, newLabel);
+  const updateLabel = Object.assign(label, { name: newLabel.name });
   const query = knex(Labels)
-    .where('id', updateLabel.id)
-    .update(updateLabel);
-  return await query;
+    .update('name', updateLabel.name)
+    .where('id', updateLabel.id);
+  const result = await query;
+  return updateLabel;
 }
 
 export async function create(label) {
@@ -56,3 +57,14 @@ export async function create(label) {
   return label;
 }
 
+export async function deleteLabel(labelId) {
+  if (!labelId) {
+    throw new Error('no label id given');
+  }
+  const knex = getConn();
+  const query = knex(Labels)
+    .del()
+    .where('id', labelId);
+  const result = await query;
+  return ({ deleted: result === 1  });
+}

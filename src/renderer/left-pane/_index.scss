@@ -21,21 +21,33 @@
   }
 
   &-item {
+    display: flex;
+    justify-content: space-between;
     margin: 8px 0;
     cursor: pointer;
   }
 
+  &-options {
+    display: inline-flex;
+    align-self: right;
+    color: #fff;
+  }
+
+  &-options:hover {
+    color: #000;
+  }
+
+  &-edit, &-delete {
+    padding: 0 3px;
+  }
+
   &-item:hover {
-    color: #d3d3d3;
+    // color: #d3d3d3;
     -webkit-user-select: none; /* Safari */        
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+/Edge */
     user-select: none;
   }
-  &-item:active {
-    color: #959595;
-  }
-
   &--active {
     text-decoration: underline;
   }

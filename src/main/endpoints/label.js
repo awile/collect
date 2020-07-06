@@ -3,11 +3,15 @@ import { LabelService } from '../services/';
 
 export async function handleLabelRequests(event, request) {
   const { url, body, responseChannel } = request;
+  let response = { status: 'bad request' };
   if (url === 'SEARCH') {
-    const labels = await LabelService.search(body || {});
-    event.reply(responseChannel, labels);
+    response = await LabelService.search(body || {});
   } else if (url === 'CREATE') {
-    const label = await LabelService.create(body);
-    event.reply(responseChannel, label);
+    response = await LabelService.create(body);
+  } else if (url === 'UPDATE') {
+    response = await LabelService.update(body);
+  } else if (url === 'DELETE') {
+    response = await LabelService.deleteLabel(body.id);
   }
+  event.reply(responseChannel, response);
 }
