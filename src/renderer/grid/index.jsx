@@ -47,6 +47,7 @@ class Grid extends Component {
 
   render() {
     const { photos } = this.state;
+    const { labels } = this.props;
 
     return (
       <div className='clt-Grid'>
@@ -55,7 +56,8 @@ class Grid extends Component {
             {
               photos.length === 0 ?
                 <Empty description={<span>No images.</span>} /> :
-                photos.map(photo => <PhotoBlock photo={photo} />)
+                photos.map(photo =>
+                  <PhotoBlock key={photo.name} photo={photo} labels={labels} />)
             }
           </div>
         </UploadWrapper>
@@ -65,7 +67,10 @@ class Grid extends Component {
 }
 
 Grid.propTypes = {
-  selectedLabelId: PropTypes.string
+  selectedLabelId: PropTypes.string,
+  labels: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string
+  }))
 }
 
 export default Grid;

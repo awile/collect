@@ -5,6 +5,7 @@ import {
   Labels
 } from '../db/';
 
+
 export async function search(params = {}) {
   const knex = getConn();
   const { size, offset } = params;

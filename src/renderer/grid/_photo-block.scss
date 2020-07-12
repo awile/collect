@@ -8,6 +8,7 @@
 
   &-container {
     display: flex;
+    flex-direction: column;
     top: 0;
     justify-content: center;
     align-items: center;
@@ -17,5 +18,11 @@
   }
 
   &-image {
+  }
+
+  &-tags {
+    width: 100%;
+    padding: 0 10px 5px 10px;
+    margin-top: auto;
   }
 }

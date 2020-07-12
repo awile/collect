@@ -3,16 +3,22 @@
 import { app } from 'electron';
 import { ipcMain } from 'electron'
 import { initDB } from './db/';
-import { handlePhotoRequests, handleLabelRequests } from './endpoints/';
+import {
+  handlePhotoRequests,
+  handleLabelRequests,
+  handlePhotoLabelReequest
+} from './endpoints/';
 import * as fs from 'fs';
 
-const LabelsChannel  = 'labels-request';
-const PhotosChannel  = 'photos-request';
-const CHANNELS = [LabelsChannel, PhotosChannel];
+const LabelsChannel = 'labels-request';
+const PhotosChannel = 'photos-request';
+const PhotoLabelsChannel = 'photoLabels-request'
+const CHANNELS = [LabelsChannel, PhotosChannel, PhotoLabelsChannel];
 
 export function setupListeners() {
   ipcMain.on(LabelsChannel, handleLabelRequests);
   ipcMain.on(PhotosChannel, handlePhotoRequests);
+  ipcMain.on(PhotoLabelsChannel, handlePhotoLabelReequest);
 }
 
 export function teardownListeners() {

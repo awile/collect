@@ -3,7 +3,8 @@ import {
   getConn,
   getUuid,
   Photos,
-  PhotoLabels
+  PhotoLabels,
+  Labels,
 } from '../db/';
 import { writePhoto } from './utils';
 
@@ -14,23 +15,28 @@ export async function search(params = {}) {
   const queryOffset = offset || 0;
   const knex = getConn();
 
-  let query = null;
+  let photos = [];
   if (labels) {
-    query = knex(PhotoLabels)
+    let query = knex(PhotoLabels)
       .join(Photos, 'photoLabels.photo', 'photos.id')
       .select()
       .whereIn('photoLabels.label', labels)
       .offset(queryOffset)
       .limit(querySize)
       .orderBy('photos.created_at', 'desc');
+    photos = await query;
   } else {
-    query = knex(Photos)
+    let query = knex(Photos)
       .select()
       .offset(queryOffset)
       .limit(querySize)
       .orderBy('created_at', 'desc');
+    photos = await query;
   }
-  return await query;
+  const photoLabels =
+    await Promise.all(photos.map(async (p) => await getLabels(p.id)));
+  photoLabels.forEach((labels, i) => photos[i].labels = labels);
+  return photos;
 }
 
 export async function get(id) {
@@ -42,6 +48,20 @@ export async function get(id) {
   return await query;
 }
 
+export async function getLabels(photoId) {
+  if (!photoId) {
+    throw new Error('retrieving a photo requires an id');
+  }
+  const knex = getConn();
+  const query = knex(Photos)
+    .join(PhotoLabels, 'photoLabels.photo', 'photos.id')
+    .join(Labels, 'labels.id', 'photoLabels.label')
+    .where('photos.id', photoId);
+  const x = await query;
+  console.log('labels', x)
+  return x
+}
+
 export async function create(photo) {
   if (!(photo.file_type && photo.name && photo.data)) {
     throw new Error('Photo requires fields: file_type, name, & data');
@@ -50,6 +70,7 @@ export async function create(photo) {
   const imagePath = await writePhoto(`${photo.name}.${photo.file_type}`, imageData);
   const knex = getConn();
   const newPhoto = {
+    id: getUuid(),
     name: photo.name,
     file_type: photo.file_type,
     location: imagePath
