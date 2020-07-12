@@ -57,16 +57,14 @@ export async function getLabels(photoId) {
     .join(PhotoLabels, 'photoLabels.photo', 'photos.id')
     .join(Labels, 'labels.id', 'photoLabels.label')
     .where('photos.id', photoId);
-  const x = await query;
-  console.log('labels', x)
-  return x
+  return await query;
 }
 
 export async function create(photo) {
   if (!(photo.file_type && photo.name && photo.data)) {
     throw new Error('Photo requires fields: file_type, name, & data');
   }
-  const imageData = photo.data.replace(/^data:image\/\w+;base64,/, "");
+  const imageData = photo.data.replace(/^data:\w+\/\w+;base64,/, "");
   const imagePath = await writePhoto(`${photo.name}.${photo.file_type}`, imageData);
   const knex = getConn();
   const newPhoto = {

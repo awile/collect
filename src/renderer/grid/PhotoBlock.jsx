@@ -76,15 +76,20 @@ class PhotoBlock extends Component {
     const { photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
-    const { location } = photo;
+    const { location, file_type } = photo;
 
     return (
       <div className='clt-PhotoBlock'>
         <div className='clt-PhotoBlock-container'>
+          { file_type === 'mp4' ?
+          <video width='130' height='130' autoplay>
+            <source src={`file://${location}`} type='video/mp4'></source>
+          </video> :
           <img
             width='130'
             height='130'
             src={`file://${location}`} />
+          }
           <div className='clt-PhotoBlock-tags'>
             { photoLabels.map(label =>
               <Tag
