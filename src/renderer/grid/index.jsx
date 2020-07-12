@@ -5,6 +5,7 @@ import PhotoBlock from './PhotoBlock';
 import { IPCRenderer } from '../ipc';
 import { UploadWrapper } from  '../library/';
 import moment from 'moment';
+import { Empty } from 'antd';
 
 import './_index.scss';
 
@@ -51,7 +52,11 @@ class Grid extends Component {
       <div className='clt-Grid'>
         <UploadWrapper onUpload={this.onFileUpload}>
           <div className='clt-Grid-container'>
-            { photos.map(photo => <PhotoBlock photo={photo} />) }
+            {
+              photos.length === 0 ?
+                <Empty description={<span>No images.</span>} /> :
+                photos.map(photo => <PhotoBlock photo={photo} />)
+            }
           </div>
         </UploadWrapper>
       </div>

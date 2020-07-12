@@ -27,6 +27,8 @@
     "start-renderer": "parcel -p 3000 ./src/index.html"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.1",
+    "antd": "^4.4.2",
     "knex": "^0.21.1",
     "moment": "^2.27.0",
     "react": "^16.13.1",

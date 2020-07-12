@@ -4,6 +4,13 @@ import { IPCRenderer } from '../ipc';
 import { Button } from '../library/';
 import AddLabelPlaceholder from './add-label-placeholder/';
 import moment from 'moment';
+import {
+  Popconfirm
+} from 'antd';
+import {
+  CloseOutlined,
+  EditOutlined
+} from '@ant-design/icons';
 
 import './_index.scss';
 
@@ -102,8 +109,15 @@ class LeftPane extends Component {
                   {label.name}
                 </Button>
                 <div className='clt-LeftPane-options'>
-                  <Button className='clt-LeftPane-edit'onClick={() => this.handleLabelEdit(label)}>e</Button>
-                  <Button className='clt-LeftPane-delete'onClick={() => this.handleLabelRemove(label)}>X</Button>
+                  <EditOutlined onClick={() => this.handleLabelEdit(label)}/>
+                  <Popconfirm
+                    placement='right'
+                    title='Are you sure you want to delete this label?'
+                    onConfirm={() => this.handleLabelRemove(label)}
+                    okText='Delete'
+                    cancelText='Cancel'>
+                    <CloseOutlined />
+                  </Popconfirm>
                 </div>
               </div>)
           }

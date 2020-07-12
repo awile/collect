@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Button } from '../../library/';
 import { IPCRenderer } from '../../ipc';
 import moment from 'moment';
+import { Typography } from 'antd';
+const { Text } = Typography;
 
 import './_add-label-placeholder.scss';
 
