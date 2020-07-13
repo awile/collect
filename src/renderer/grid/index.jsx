@@ -6,6 +6,7 @@ import { IPCRenderer } from '../ipc';
 import { UploadWrapper } from  '../library/';
 import moment from 'moment';
 import { Empty } from 'antd';
+import { WindowScroller, Collection } from 'react-virtualized';
 
 import './_index.scss';
 
@@ -14,13 +15,37 @@ class Grid extends Component {
     super();
 
     this.state = {
-      photos: []
+      photos: [],
+      width: 0,
+      height: 0
     };
+
     this.onFileUpload = this.onFileUpload.bind(this);
+    this.handleRef = this.handleRef.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.ref = React.createRef();
+    this.collectionRef = React.createRef();
   }
 
   componentDidMount() {
     this.getPhotos();
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize() {
+    if (this.ref) {
+      this.setState({
+        height: this.ref.current.offsetHeight,
+        width: this.ref.current.offsetWidth
+      });
+    }
+    if (this.collectionRef) {
+      this.collectionRef.recomputeCellSizesAndPositions();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -32,6 +57,13 @@ class Grid extends Component {
 
   onFileUpload() {
     this.getPhotos();
+  }
+
+  handleRef(input) {
+    if (input) {
+      this.ref.current = input;
+      this.setState({ width: input.offsetWidth, height: input.offsetHeight });
+    }
   }
 
   async getPhotos() {
@@ -46,18 +78,41 @@ class Grid extends Component {
   }
 
   render() {
-    const { photos } = this.state;
+    const { photos, height, width } = this.state;
     const { labels } = this.props;
+
+    const photoBlockRenderer = ({index, key, style}) => {
+      const photo = photos[index];
+      return (
+        <PhotoBlock className={style.cell} style={style} key={key} photo={photo} labels={labels} />
+      );
+    };
+    const cellSizeAndPositionGetter = (width, height, index) => {
+      const perRow = Math.floor((width ?? 200) / 210);
+      const blockSize = 200;
+      const gap = 10;
+      return {
+        height: blockSize,
+        width: blockSize,
+        x: (index % perRow) * (blockSize + gap),
+        y: Math.floor(index / perRow) * (blockSize + gap),
+      };
+    };
 
     return (
       <div className='clt-Grid'>
         <UploadWrapper onUpload={this.onFileUpload}>
-          <div className='clt-Grid-container'>
+          <div className='clt-Grid-container' ref={this.handleRef}>
             {
               photos.length === 0 ?
                 <Empty description={<span>No images.</span>} /> :
-                photos.map(photo =>
-                  <PhotoBlock key={photo.name} photo={photo} labels={labels} />)
+                <Collection
+                  ref={ref => this.collectionRef = ref}
+                  cellCount={photos.length}
+                  cellRenderer={photoBlockRenderer}
+                  cellSizeAndPositionGetter={({ index }) => cellSizeAndPositionGetter(width, height, index)}
+                  height={height}
+                  width={width ?? 100} />
             }
           </div>
         </UploadWrapper>

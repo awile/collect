@@ -76,7 +76,7 @@ class PhotoBlock extends Component {
   }
 
   render() {
-    const { photo, labels } = this.props;
+    const { className, photo, labels, style } = this.props;
     const { addingLabel, photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
@@ -86,7 +86,7 @@ class PhotoBlock extends Component {
     const dropdownOptions = searchOptions(searchValue, photoLabelsNotAdded);
 
     return (
-      <div className='clt-PhotoBlock'>
+      <div className={`clt-PhotoBlock ${className}`} style={style}>
         <div className='clt-PhotoBlock-container'>
           { file_type === 'mp4' ?
           <video width='200' autoplay>
@@ -134,6 +134,8 @@ class PhotoBlock extends Component {
 }
 
 PhotoBlock.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.any,
   labels: PropTypes.arrayOf(PropTypes.object)
 }
 

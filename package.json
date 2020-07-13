@@ -33,6 +33,7 @@
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-virtualized": "^9.21.2",
     "sqlite3": "^5.0.0",
     "uuid": "^8.2.0"
   },
