@@ -9,6 +9,21 @@
     margin-right: 10px;
   }
 
+  .ant-input-affix-wrapper {
+    border: 0;
+    padding: 0 11px;
+  }
+
+  .ant-input-group-addon:hover {
+    background-color: #dadada;
+    color: rgba(0, 0, 0, 0.85)
+  }
+
+  .ant-input-group-addon:active {
+    background-color: #bababa;
+    color: rgba(0, 0, 0, 0.95)
+  }
+
   &-create {
     padding: 0 4px;
     width: 14px;
@@ -17,5 +32,9 @@
   &-remove {
     padding: 0 4px;
     width: 14px;
+  }
+
+  .ant-input-group-addon {
+    border: 0;
   }
 }

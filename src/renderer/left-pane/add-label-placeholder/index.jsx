@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '../../library/';
 import { IPCRenderer } from '../../ipc';
 import moment from 'moment';
 import { Input, Typography } from 'antd';
@@ -72,13 +71,19 @@ class AddLabelPlaceholder extends React.Component {
     const { value } = this.state;
 
     const CancelIcon = (<CloseOutlined onClick={this.handleCancel} />);
-    const CreateIcon = (<CheckOutlined onClick={this.handleCreate} />);
+    const CreateIcon = (
+      <CheckOutlined
+        className='alp-AddLabelPlaceholder-check-btn'
+        onClick={this.handleCreate} />
+    );
     return (
       <div className='alp-AddLabelPlaceholder'>
         <Input
           autoFocus
+          bordered={false}
           className='alp-AddLabelPlaceholder-input'
           type='text'
+          placeholder='label name...'
           onKeyDown={this.handleEnter}
           onChange={this.handleChange}
           suffix={CancelIcon}
