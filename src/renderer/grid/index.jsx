@@ -36,11 +36,11 @@ class Grid extends Component {
     window.removeEventListener('resize', this.handleResize);
   }
 
-  handleResize() {
+  handleResize(e) {
     if (this.ref) {
       this.setState({
-        height: this.ref.current.offsetHeight,
-        width: this.ref.current.offsetWidth
+        height: e.target.outerHeight - 40,
+        width: e.target.outerWidth - 200
       });
     }
     if (this.collectionRef) {
@@ -88,6 +88,7 @@ class Grid extends Component {
       );
     };
     const cellSizeAndPositionGetter = (width, height, index) => {
+      console.log('width', width);
       const perRow = Math.floor((width ?? 200) / 210);
       const blockSize = 200;
       const gap = 10;

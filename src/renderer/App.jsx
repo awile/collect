@@ -1,12 +1,16 @@
 
 import "regenerator-runtime/runtime"; // required to fix error
-import React, { Component } from 'react';
-import moment from 'moment';
+import React, { Component } from 'react'; import moment from 'moment';
 
 import NavBar from './nav-bar/index';
 import LeftPane from './left-pane/index';
 import Grid from './grid/index';
 import { IPCRenderer } from './ipc';
+import { Layout, Menu } from 'antd';
+
+import './_app.scss';
+
+const { Content, Sider } = Layout;
 
 class App extends Component {
 
@@ -49,16 +53,21 @@ class App extends Component {
     const { labels, loading, selectedLabel } = this.state;
 
     return (
-      <div className='clt-App'>
+      <Layout className='clt-App'>
         <NavBar selectedLabelName={selectedLabel ? selectedLabel.name : ''} />
-        { loading ?
-          <div className='clt-App-loading'>loading...</div> :
-          <div className='clt-App-mainContainer'>
-            <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
-            <Grid selectedLabelId={selectedLabel && selectedLabel.id} labels={labels}/>
-          </div>
-        }
-      </div>
+        <Layout>
+            <div className='clt-App-mainContainer'>
+              <Sider className='clt-App-sider'>
+                <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
+              </Sider>
+              <Content>
+                { loading ?
+                  <div className='clt-App-loading'>loading...</div> :
+                  <Grid selectedLabelId={selectedLabel && selectedLabel.id} labels={labels} /> }
+              </Content>
+            </div>
+        </Layout>
+      </Layout>
     );
   }
 }

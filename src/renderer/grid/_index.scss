@@ -3,12 +3,9 @@
   display: flex;
   flex-wrap: wrap;
   height: 100%;
-  width: calc(100% - 150px);
-  position: absolute;
-  left: 200px;
 
   &-container {
     height: 100%;
-    padding: 15px;
+    margin: 15px;
   }
 }

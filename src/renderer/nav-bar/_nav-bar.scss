@@ -1,12 +1,19 @@
 
+.ant-layout-header {
+  background: #fff !important;
+  line-height: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+}
+
 .clt-NavBar {
   width: 100%;
-  background: #fff;
   border-bottom: solid 1px #d3d3d3;
   position: fixed;
-  top: 0;
-  height: 36px;
   z-index: 1;
+  line-height: 40px;
+  background: #fff;
+  padding: 0;
   -webkit-app-region: drag;
 
   &-container {

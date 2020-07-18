@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Layout } from 'antd';
+
+const { Header, Content, Sider } = Layout;
 
 import './_nav-bar.scss';
 
@@ -8,7 +11,7 @@ class NavBar extends Component {
     const { selectedLabelName } = this.props;
 
     return (
-      <div className='clt-NavBar'>
+      <Header className='clt-NavBar'>
         <div className='clt-NavBar-container'>
           <span className='clt-NavBar-title'>1-800-COLLECT</span>
           { selectedLabelName && (
@@ -18,7 +21,7 @@ class NavBar extends Component {
             </React.Fragment>
           )}
         </div>
-      </div>
+      </Header>
     );
   }
 }
