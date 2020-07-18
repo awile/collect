@@ -36,9 +36,10 @@ html, body {
   &-mainContainer {
     position: absolute;
     top: 36px;
-    height: 100%;
+    height: calc(100% - 40px);
     width: 100%;
     display: flex;
+    overflow: hidden;
   }
 
   &-sider {

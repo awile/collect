@@ -1,8 +1,14 @@
 
+.ant-layout-content {
+  background: #fff;
+}
+
 .clt-Grid {
   display: flex;
   flex-wrap: wrap;
   height: 100%;
+  overflow-y: scroll;
+  background: #fff;
 
   &-container {
     height: 100%;

@@ -57,7 +57,7 @@ class App extends Component {
         <NavBar selectedLabelName={selectedLabel ? selectedLabel.name : ''} />
         <Layout>
             <div className='clt-App-mainContainer'>
-              <Sider className='clt-App-sider'>
+              <Sider className='clt-App-sider' width={200}>
                 <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
               </Sider>
               <Content>
