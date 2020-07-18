@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Button } from '../../library/';
 import { IPCRenderer } from '../../ipc';
 import moment from 'moment';
-import { Typography } from 'antd';
+import { Input, Typography } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 
 import './_add-label-placeholder.scss';
@@ -17,7 +18,7 @@ class AddLabelPlaceholder extends React.Component {
     };
 
     this.handleCreate = this.handleCreate.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
   }
@@ -57,29 +58,33 @@ class AddLabelPlaceholder extends React.Component {
     }
   }
 
-  handleRemove() {
-    const { label, onRemove } = this.props;
-    onRemove(label.id);
+  handleCancel() {
+    const { label, onCancel } = this.props;
+    const { value } = this.state;
+    if (value !== '') {
+      this.setState({ value: '' });
+    } else {
+      onCancel(label.id);
+    }
   }
 
   render() {
     const { value } = this.state;
 
+    const CancelIcon = (<CloseOutlined onClick={this.handleCancel} />);
+    const CreateIcon = (<CheckOutlined onClick={this.handleCreate} />);
     return (
       <div className='alp-AddLabelPlaceholder'>
-        <input
+        <Input
+          autoFocus
           className='alp-AddLabelPlaceholder-input'
           type='text'
           onKeyDown={this.handleEnter}
           onChange={this.handleChange}
+          suffix={CancelIcon}
+          addonAfter={CreateIcon}
           value={value}>
-        </input>
-        <Button
-          className='alp-AddLabelPlaceholder-create'
-          onClick={this.handleCreate}>√</Button>
-        <Button
-          className='alp-AddLabelPlaceholder-remove'
-          onClick={this.handleRemove}>X</Button>
+        </Input>
       </div>
     );
   }
@@ -90,7 +95,7 @@ AddLabelPlaceholder.propTypes = {
     id: PropTypes.string
   }),
   onCreate: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired
 };
 
 export default AddLabelPlaceholder;

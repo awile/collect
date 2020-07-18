@@ -24,7 +24,7 @@ class LeftPane extends Component {
 
     this.handleAddLabel = this.handleAddLabel.bind(this);
     this.onLabelCreate = this.onLabelCreate.bind(this);
-    this.onLabelRemove = this.onLabelRemove.bind(this);
+    this.onLabelCancel = this.onLabelCancel.bind(this);
     this.handleLabelRemove = this.handleLabelRemove.bind(this);
     this.handleLabelEdit = this.handleLabelEdit.bind(this);
   }
@@ -52,15 +52,22 @@ class LeftPane extends Component {
     const { onChange, selectedLabel } = this.props;
     const updatedLabels = labels.map(l => l.id === oldLabel.id ? newLabel : l);
     this.setState({ labels: updatedLabels });
-    if (selectedLabel.id === newLabel.id) {
+    if (selectedLabel && newLabel && selectedLabel.id === newLabel.id) {
       onChange(newLabel);
     }
   }
 
-  onLabelRemove(labelId) {
+  onLabelCancel(labelId) {
     const { labels } = this.state;
-    const filteredLabels = labels.filter(l => l.id !== labelId);
-    this.setState({ labels: filteredLabels });
+    const label = labels.find(l => l.id === labelId);
+    if (label && !label.name) {
+      const filteredLabels = labels.filter(l => l.id !== labelId);
+      this.setState({ labels: filteredLabels });
+    } else {
+      const updatedLabels = labels.map(l =>
+        l.id === labelId ? Object.assign(l, { isPlaceholder: false }): l);
+      this.setState({ labels: updatedLabels });
+    }
   }
 
   handleLabelRemove(label) {
@@ -98,7 +105,7 @@ class LeftPane extends Component {
                 key={label.id}
                 label={label}
                 onCreate={this.onLabelCreate}
-                onRemove={this.onLabelRemove} /> :
+                onCancel={this.onLabelCancel} /> :
               <div
                 key={label.id}
                 className='clt-LeftPane-item'>
