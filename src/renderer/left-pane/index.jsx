@@ -4,13 +4,8 @@ import { IPCRenderer } from '../ipc';
 import { Button } from '../library/';
 import AddLabelPlaceholder from './add-label-placeholder/';
 import moment from 'moment';
-import {
-  Popconfirm
-} from 'antd';
-import {
-  CloseOutlined,
-  EditOutlined
-} from '@ant-design/icons';
+import { List, Popconfirm } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 import './_index.scss';
 
@@ -93,44 +88,57 @@ class LeftPane extends Component {
     const { labels } = this.state;
     const { selectedLabel, onChange } = this.props;
 
-    return (
-      <div className='clt-LeftPane'>
+    const actions = (label) => [
+      <EditOutlined onClick={() => this.handleLabelEdit(label)}/>,
+      <Popconfirm
+        placement='right'
+        title='Are you sure you want to delete this label?'
+        onConfirm={() => this.handleLabelRemove(label)}
+        okText='Delete'
+        cancelText='Cancel'>
+        <DeleteOutlined />
+      </Popconfirm>
+    ];
+    const header = (
         <div className='clt-LeftPane-add-container'>
           <Button onClick={this.handleAddLabel}>+ add label</Button>
+          { selectedLabel &&
+            <Button
+              className='clt-LeftPane-clear'
+              onClick={() => onChange('')}>clear</Button> }
         </div>
-        <div className='clt-LeftPane-list-container'>
-          { labels.map(label =>
-            label.isPlaceholder ?
-              <AddLabelPlaceholder
-                key={label.id}
-                label={label}
-                onCreate={this.onLabelCreate}
-                onCancel={this.onLabelCancel} /> :
-              <div
-                key={label.id}
-                className='clt-LeftPane-item'>
-
-                <Button
-                  className={selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}
-                  onClick={() => onChange(label)}>
-                  {label.name}
-                </Button>
-                <div className='clt-LeftPane-options'>
-                  <EditOutlined onClick={() => this.handleLabelEdit(label)}/>
-                  <Popconfirm
-                    placement='right'
-                    title='Are you sure you want to delete this label?'
-                    onConfirm={() => this.handleLabelRemove(label)}
-                    okText='Delete'
-                    cancelText='Cancel'>
-                    <CloseOutlined />
-                  </Popconfirm>
-                </div>
-              </div>)
+    );
+    return (
+      <div className='clt-LeftPane'>
+        <List
+          header={header}
+          className='clt-LeftPane-list-container'
+          itemLayout="horizontal"
+          size='small'
+          split={false}
+          rowKey={label => label.id}>
+          { labels.map(label => (
+            <List.Item
+              actions={label.isPlaceholder ? [] : actions(label)}
+              key={label.id}
+              className='clit-LeftPane-item'>
+              {
+                label.isPlaceholder ?
+                  <AddLabelPlaceholder
+                    key={label.id}
+                    label={label}
+                    onCreate={this.onLabelCreate}
+                    onCancel={this.onLabelCancel} /> :
+                  <Button
+                    className={`clt-LeftPane-name
+                      ${selectedLabel && label.id === selectedLabel.id ? 'clt-LeftPane--active' : ''}`}
+                    onClick={() => onChange(label)}>
+                    {label.name}
+                  </Button>
+              }
+            </List.Item>))
           }
-          <hr />
-          <span className='clt-LeftPane-item' onClick={() => onChange('')}>clear</span>
-        </div>
+        </List>
       </div>
     );
   }
