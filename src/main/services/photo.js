@@ -11,7 +11,7 @@ import { writePhoto } from './utils';
 
 export async function search(params = {}) {
   const { size, offset, labels } = params;
-  const querySize = size || 10;
+  const querySize = size || 100;
   const queryOffset = offset || 0;
   const knex = getConn();
 
