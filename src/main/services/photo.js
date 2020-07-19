@@ -7,6 +7,7 @@ import {
   Labels,
 } from '../db/';
 import { writePhoto } from './utils';
+import * as PhotoLabelService from './photoLabel';
 
 
 export async function search(params = {}) {
@@ -75,5 +76,9 @@ export async function create(photo) {
   };
   const query = knex(Photos).insert(newPhoto);
   const result = await query;
+  if (photo.label) {
+    const labelRelation = { photo: newPhoto.id, label: photo.label };
+    const labelAdded = await PhotoLabelService.create(labelRelation);
+  }
   return photo;
 }

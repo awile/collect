@@ -79,7 +79,7 @@ class Grid extends Component {
 
   render() {
     const { photos, height, width } = this.state;
-    const { labels } = this.props;
+    const { labels, selectedLabelId } = this.props;
 
     const photoBlockRenderer = ({index, key, style}) => {
       const photo = photos[index];
@@ -101,7 +101,7 @@ class Grid extends Component {
 
     return (
       <div className='clt-Grid'>
-        <UploadWrapper onUpload={this.onFileUpload}>
+        <UploadWrapper params={{ label: selectedLabelId }} onUpload={this.onFileUpload}>
           <div className='clt-Grid-container' ref={this.handleRef}>
             {
               photos.length === 0 ?

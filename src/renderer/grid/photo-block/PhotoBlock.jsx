@@ -122,12 +122,12 @@ class PhotoBlock extends Component {
             onOk={() => this.setState({ detailIsVisible: false })}>
             <DetailPage photo={photo} />
           </Modal>
-          {/* { photoLabels.map(label => */}
-          {/*   <Tag */}
-          {/*     key={label.id} */}
-          {/*     onClose={() => this.handleRemove(label)} */}
-          {/*     closable>{label.name}</Tag>) */}
-          {/* } */}
+          { photoLabels.map(label =>
+            <Tag
+              key={label.id}
+              onClose={() => this.handleRemove(label)}
+              closable>{label.name}</Tag>)
+          }
           { addingLabel ?
             <Select
               autoFocus

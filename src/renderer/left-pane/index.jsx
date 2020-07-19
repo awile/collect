@@ -25,8 +25,6 @@ class LeftPane extends Component {
   }
 
   componentDidMount() {
-    const labels = [{ id: '123', name: 'photos' }];
-    this.setState({ labels });
     this.getLabels();
   }
 

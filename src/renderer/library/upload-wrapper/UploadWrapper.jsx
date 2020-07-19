@@ -65,7 +65,7 @@ class UploadWrapper extends React.Component {
   }
 
   handleFile(file) {
-    const { onUpload } = this.props;
+    const { params, onUpload } = this.props;
     const reader = new FileReader();
     reader.onload = (event) => {
       const bits = event.target.result;
@@ -76,7 +76,7 @@ class UploadWrapper extends React.Component {
       }
       const responseChannel = `response-photos-${moment().toISOString()}`;
       IPCRenderer.once(responseChannel, (event, result) => onUpload && onUpload());
-      IPCRenderer.send('photos-request', { url: 'CREATE', body: newPhoto, responseChannel });
+      IPCRenderer.send('photos-request', { url: 'CREATE', body: { ...newPhoto, ...params }, responseChannel });
     }
     reader.readAsDataURL(file);
   }
@@ -97,7 +97,8 @@ class UploadWrapper extends React.Component {
 }
 
 UploadWrapper.propTypes = {
-  onUpload: PropTypes.func
+  onUpload: PropTypes.func,
+  params: PropTypes.object
 };
 
 export default UploadWrapper;
