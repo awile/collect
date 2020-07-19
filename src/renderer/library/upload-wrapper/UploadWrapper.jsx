@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IPCRenderer } from '../../ipc';
 import moment from 'moment';
+import { message } from 'antd';
+import { FileAddOutlined } from '@ant-design/icons';
 
 import './_upload-wrapper.scss'
 
@@ -47,7 +49,7 @@ class UploadWrapper extends React.Component {
   handleDragLeave(e) {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ fileIsHovering: false });
+    setTimeout(() => this.setState({ fileIsHovering: false }), 100);
   }
 
   handleDragOver(e) {
@@ -75,7 +77,12 @@ class UploadWrapper extends React.Component {
         data: bits
       }
       const responseChannel = `response-photos-${moment().toISOString()}`;
-      IPCRenderer.once(responseChannel, (event, result) => onUpload && onUpload());
+      IPCRenderer.once(responseChannel, (event, result) =>  {
+        if (onUpload) {
+          onUpload();
+        }
+        message.success('File Uploaded.');
+      });
       IPCRenderer.send('photos-request', { url: 'CREATE', body: { ...newPhoto, ...params }, responseChannel });
     }
     reader.readAsDataURL(file);
@@ -88,7 +95,8 @@ class UploadWrapper extends React.Component {
     return (
       <div className={`lib-UploadWrapper ${fileIsHovering ? 'lib-UploadWrapper--active': ''}`} ref={this.ref}>
         <div className='lib-UploadWrapper-message'>
-          <div>Drop File to Upload</div>
+          <FileAddOutlined style={{ fontSize: 40 }} />
+          <div className='lib-UploadWrapper-text'>Drop File to Upload</div>
         </div>
         {children}
       </div>
