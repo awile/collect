@@ -2,10 +2,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { IPCRenderer } from '../ipc';
-import { Button, Select, Tag, Input, Tooltip, Popconfirm } from 'antd';
+import { IPCRenderer } from '../../ipc';
+import {
+  Button,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  Tag,
+  Tooltip
+} from 'antd';
 const { Option } = Select;
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { ProfileOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import DetailPage from '../detail-page/DetailPage';
 
 import './_photo-block.scss';
 
@@ -17,7 +26,8 @@ class PhotoBlock extends Component {
       photoLabels: [],
       options: [],
       searchValue: '',
-      addingLabel: false
+      addingLabel: false,
+      detailIsVisible: false
     };
 
     this.handleSearch = this.handleSearch.bind(this);
@@ -77,10 +87,10 @@ class PhotoBlock extends Component {
 
   render() {
     const { className, photo, labels, style } = this.props;
-    const { addingLabel, photoLabels, searchValue } = this.state;
+    const { addingLabel, detailIsVisible, photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
-    const { location, file_type } = photo;
+    const { file_type, location, name } = photo;
     const photoLabelIds = photoLabels.map(p => p.id);
     const photoLabelsNotAdded = labels.filter(l => !photoLabelIds.includes(l.id));
     const dropdownOptions = searchOptions(searchValue, photoLabelsNotAdded);
@@ -98,12 +108,26 @@ class PhotoBlock extends Component {
           }
         </div>
         <div className='clt-PhotoBlock-tags'>
-          { photoLabels.map(label =>
-            <Tag
-              key={label.id}
-              onClose={() => this.handleRemove(label)}
-              closable>{label.name}</Tag>)
-          }
+          <Button
+            className='clt-PhotoBlock-detail-btn'
+            size='small'
+            icon={<ProfileOutlined />}
+            onClick={() => this.setState({ detailIsVisible: true })} />
+          <Modal
+            title={`${name}.${file_type}`}
+            mask={false}
+            maskClosable={true}
+            visible={detailIsVisible}
+            onCancel={() => this.setState({ detailIsVisible: false })}
+            onOk={() => this.setState({ detailIsVisible: false })}>
+            <DetailPage photo={photo} />
+          </Modal>
+          {/* { photoLabels.map(label => */}
+          {/*   <Tag */}
+          {/*     key={label.id} */}
+          {/*     onClose={() => this.handleRemove(label)} */}
+          {/*     closable>{label.name}</Tag>) */}
+          {/* } */}
           { addingLabel ?
             <Select
               autoFocus

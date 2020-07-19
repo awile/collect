@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import PhotoBlock from './PhotoBlock';
+import PhotoBlock from './photo-block/PhotoBlock';
 import { IPCRenderer } from '../ipc';
 import { UploadWrapper } from  '../library/';
 import moment from 'moment';

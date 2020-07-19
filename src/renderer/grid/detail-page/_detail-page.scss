@@ -1,0 +1,13 @@
+
+.clt-DetailPage {
+  width: 100%;
+
+  &-container {
+    display: flex;
+  }
+
+  &-image {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
