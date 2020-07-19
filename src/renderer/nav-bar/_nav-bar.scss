@@ -9,6 +9,8 @@
 .clt-NavBar {
   width: 100%;
   border-bottom: solid 1px #d3d3d3;
+  display: flex;
+  flex-direction: row;
   position: fixed;
   z-index: 1;
   line-height: 40px;
@@ -20,6 +22,8 @@
     display: flex;
     align-items: center;
     height: 100%;
+    max-width: 400px;
+    width: 400px;
   }
 
   &-title {
@@ -32,5 +36,30 @@
 
   &-current {
     margin-left: 10px;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-search-bar {
+    height: 20px;
+    margin-left: 5%! important;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+  }
+  &-search-bar:focus-within {
+    height: 28px;
+  }
+  ::-webkit-input-placeholder {
+    text-align: center;
+  }
+
+  .ant-input-search {
+    height: 20px;
+  }
+
+  .ant-input-search:focus-within {
+    height: 28px;
   }
 }

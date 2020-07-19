@@ -13,5 +13,9 @@
   &-container {
     height: 100%;
     margin: 15px;
+
+    .ReactVirtualized__Collection:focus {
+      outline: none;
+    }
   }
 }
