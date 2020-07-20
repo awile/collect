@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   Modal,
+  message,
   Popconfirm,
   Select,
   Tag,
@@ -60,7 +61,6 @@ class PhotoBlock extends Component {
   }
 
   handleSelect(labelId) {
-    console.log('labelId', labelId);
     const { photo, labels } = this.props;
     const label = labels.find(l => l.id === labelId);
     this.setState({ searchValue: label.name });
@@ -76,6 +76,7 @@ class PhotoBlock extends Component {
         photoLabels: photoLabels.concat([label]),
         searchValue: ''
       });
+      message.success(`label ${label.name} added to ${photo.name}.${photo.file_type}`);
     });
     IPCRenderer.send('photoLabels-request', { url: 'CREATE', body: query, responseChannel });
   }
