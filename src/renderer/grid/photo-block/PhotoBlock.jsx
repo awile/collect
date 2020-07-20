@@ -126,9 +126,10 @@ class PhotoBlock extends Component {
             icon={<ProfileOutlined />}
             onClick={() => this.setState({ detailIsVisible: true })} />
           <Modal
-            title={`${name}.${file_type}`}
+            title={`${name.toUpperCase()}`}
             mask={false}
             maskClosable={true}
+            width={800}
             visible={detailIsVisible}
             onCancel={() => this.setState({ detailIsVisible: false })}
             onOk={() => this.setState({ detailIsVisible: false })}>
