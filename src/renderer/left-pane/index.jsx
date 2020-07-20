@@ -42,9 +42,10 @@ class LeftPane extends Component {
 
   onLabelCreate(oldLabel, newLabel) {
     const { labels } = this.state;
-    const { onChange, selectedLabel } = this.props;
+    const { onLabelsUpdate, onChange, selectedLabel } = this.props;
     const updatedLabels = labels.map(l => l.id === oldLabel.id ? newLabel : l);
     this.setState({ labels: updatedLabels });
+    onLabelsUpdate(updatedLabels);
     if (selectedLabel && newLabel && selectedLabel.id === newLabel.id) {
       onChange(newLabel);
     }
@@ -147,7 +148,8 @@ LeftPane.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string
   }),
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onLabelsUpdate: PropTypes.func
 };
 
 export default LeftPane;

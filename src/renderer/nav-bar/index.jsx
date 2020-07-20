@@ -57,7 +57,6 @@ class NavBar extends Component {
     const { onChange, selectedLabelName } = this.props;
     const { options, value } = this.state;
 
-    console.log('current value', value);
     return (
       <Header className='clt-NavBar'>
         <div className='clt-NavBar-container'>

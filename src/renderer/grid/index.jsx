@@ -44,7 +44,7 @@ class Grid extends Component {
       });
     }
     if (this.collectionRef) {
-      this.collectionRef.recomputeCellSizesAndPositions();
+      this.collectionRef.current.recomputeCellSizesAndPositions();
     }
   }
 
@@ -84,18 +84,19 @@ class Grid extends Component {
     const photoBlockRenderer = ({index, key, style}) => {
       const photo = photos[index];
       return (
-        <PhotoBlock className={style.cell} style={style} key={key} photo={photo} labels={labels} />
+        <PhotoBlock className={style.cell} selectedLabelId={selectedLabelId} style={style} key={key} photo={photo} labels={labels} />
       );
     };
     const cellSizeAndPositionGetter = (width, height, index) => {
       const perRow = Math.floor((width ?? 200) / 210) || 4;
-      const blockSize = 200;
+      const blockSizeX = 200;
+      const blockSizeY = 260;
       const gap = 10;
       return {
-        height: blockSize,
-        width: blockSize,
-        x: (index % perRow) * (blockSize + gap),
-        y: Math.floor(index / perRow) * (blockSize + gap),
+        height: blockSizeY,
+        width: blockSizeX,
+        x: (index % perRow) * (blockSizeX + gap),
+        y: Math.floor(index / perRow) * (blockSizeY + gap),
       };
     };
 
@@ -107,12 +108,13 @@ class Grid extends Component {
               photos.length === 0 ?
                 <Empty description={<span>No images.</span>} /> :
                 <Collection
-                  ref={ref => this.collectionRef = ref}
+                  ref={this.collectionRef}
                   cellCount={photos.length}
                   cellRenderer={photoBlockRenderer}
                   cellSizeAndPositionGetter={({ index }) => cellSizeAndPositionGetter(width, height, index)}
                   height={height}
-                  width={width ?? 100} />
+                  width={width ?? 100}
+                  data={labels} />
             }
           </div>
         </UploadWrapper>

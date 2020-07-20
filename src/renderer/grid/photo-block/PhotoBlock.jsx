@@ -41,11 +41,17 @@ class PhotoBlock extends Component {
   }
 
   componentDidUpdate() {
-    const { options, searchValue } = this.state;
-    const { labels } = this.props
-    if (labels && !(options.length === labels.length ||
-        labels.map((o, i) => options[i] && o.id === options[i].id))) {
-      this.setState({ options: labels });
+    const { photoLabels, options, searchValue } = this.state;
+    const { photo, labels } = this.props
+    const labelsEqual = (l1, l2) => l1.id === l2.id && l1.name === l2.name;
+
+    if (options.length !== labels.length ||
+      !options.every((l, i) => labelsEqual(l, labels[i]))) {
+      const newPhotoLabels = photoLabels.map(label => {
+        const latestLabel = labels.find(l => l.id === label.id);
+        return {...label, name: latestLabel.name}
+      });
+      this.setState({ options: labels, photoLabels: newPhotoLabels });
     }
   }
 
@@ -86,12 +92,18 @@ class PhotoBlock extends Component {
   }
 
   render() {
-    const { className, photo, labels, style } = this.props;
+    const { className, photo, labels, selectedLabelId, style } = this.props;
     const { addingLabel, detailIsVisible, photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
     const { file_type, location, name } = photo;
     const photoLabelIds = photoLabels.map(p => p.id);
+
+    let labelToDisplayId = photoLabelIds[0];
+    if (photoLabelIds.includes(selectedLabelId)) {
+      labelToDisplayId = selectedLabelId;
+    }
+    const labelToDisplay = labelToDisplayId ? labels.find(l => l.id === labelToDisplayId) : null;
     const photoLabelsNotAdded = labels.filter(l => !photoLabelIds.includes(l.id));
     const dropdownOptions = searchOptions(searchValue, photoLabelsNotAdded);
 
@@ -122,12 +134,6 @@ class PhotoBlock extends Component {
             onOk={() => this.setState({ detailIsVisible: false })}>
             <DetailPage photo={photo} />
           </Modal>
-          { photoLabels.map(label =>
-            <Tag
-              key={label.id}
-              onClose={() => this.handleRemove(label)}
-              closable>{label.name}</Tag>)
-          }
           { addingLabel ?
             <Select
               autoFocus
@@ -150,6 +156,14 @@ class PhotoBlock extends Component {
               size='small'
               icon={<PlusOutlined />}
               onClick={() => this.setState({ addingLabel: true })} />
+          }
+        </div>
+        <div className='clt-PhotoBlock-labels'>
+          { labelToDisplay &&
+            <Tag
+              key={labelToDisplay.id}
+              onClose={() => this.handleRemove(labelToDisplay)}
+              closable>{labelToDisplay.name}</Tag>
           }
         </div>
       </div>

@@ -80,7 +80,6 @@ class AddLabelPlaceholder extends React.Component {
       <div className='alp-AddLabelPlaceholder'>
         <Input
           autoFocus
-          bordered={false}
           className='alp-AddLabelPlaceholder-input'
           type='text'
           placeholder='label name...'

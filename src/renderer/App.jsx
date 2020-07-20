@@ -61,7 +61,10 @@ class App extends Component {
         <Layout>
             <div className='clt-App-mainContainer'>
               <Sider className='clt-App-sider' width={200}>
-                <LeftPane selectedLabel={selectedLabel} onChange={this.onChange} />
+                <LeftPane
+                  selectedLabel={selectedLabel}
+                  onChange={this.onChange}
+                  onLabelsUpdate={(labels) => this.setState({ labels })}/>
               </Sider>
               <Content>
                 { loading ?
