@@ -44,6 +44,11 @@
     &-current {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      .ant-tag {
+        margin-top: 5px;
+      }
     }
   }
 }

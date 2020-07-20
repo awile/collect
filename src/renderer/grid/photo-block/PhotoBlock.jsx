@@ -60,6 +60,7 @@ class PhotoBlock extends Component {
   }
 
   handleSelect(labelId) {
+    console.log('labelId', labelId);
     const { photo, labels } = this.props;
     const label = labels.find(l => l.id === labelId);
     this.setState({ searchValue: label.name });
@@ -133,7 +134,12 @@ class PhotoBlock extends Component {
             visible={detailIsVisible}
             onCancel={() => this.setState({ detailIsVisible: false })}
             onOk={() => this.setState({ detailIsVisible: false })}>
-            <DetailPage photo={photo} />
+            <DetailPage
+              photo={{ ...photo, labels: photoLabels }}
+              labels={labels}
+              onRemove={this.handleRemove}
+              onSelect={this.handleSelect}
+            />
           </Modal>
           { addingLabel ?
             <Select
