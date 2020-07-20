@@ -54,3 +54,14 @@ export async function deletePhotoLabel(body) {
     .andWhere('label', label)
   return await query;
 }
+
+export async function removeAllWithLabel(labelId) {
+  if (!labelId) {
+    throw new Error('no label id given remove label relations');
+  }
+  const knex = getConn();
+  const query = knex(PhotoLabels)
+    .del()
+    .where('label', labelId);
+  return await query;
+}

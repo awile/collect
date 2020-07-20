@@ -49,7 +49,7 @@ class PhotoBlock extends Component {
       !options.every((l, i) => labelsEqual(l, labels[i]))) {
       const newPhotoLabels = photoLabels.map(label => {
         const latestLabel = labels.find(l => l.id === label.id);
-        return {...label, name: latestLabel.name}
+        return latestLabel ? {...label, name: latestLabel.name} : label;
       });
       this.setState({ options: labels, photoLabels: newPhotoLabels });
     }

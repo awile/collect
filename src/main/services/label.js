@@ -5,6 +5,7 @@ import {
   Labels
 } from '../db/';
 
+import * as PhotoLabelService from './photoLabel';
 
 export async function search(params = {}) {
   const knex = getConn();
@@ -60,12 +61,13 @@ export async function create(label) {
 
 export async function deleteLabel(labelId) {
   if (!labelId) {
-    throw new Error('no label id given');
+    throw new Error('no label id given to delete label');
   }
   const knex = getConn();
   const query = knex(Labels)
     .del()
     .where('id', labelId);
   const result = await query;
+  await PhotoLabelService.removeAllWithLabel(labelId);
   return ({ deleted: result === 1  });
 }

@@ -66,11 +66,13 @@ class LeftPane extends Component {
 
   handleLabelRemove(label) {
     const responseChannel = `response-labels-${moment().toISOString()}`;
+    const { onLabelsUpdate } = this.props;
     IPCRenderer.once(responseChannel, (event, resp) => {
       if (resp.deleted) {
         const { labels } = this.state;
         const filteredLabels = labels.filter(l => l.id !== label.id);
         this.setState({ labels: filteredLabels });
+        onLabelsUpdate(filteredLabels);
       }
     });
     IPCRenderer.send('labels-request', { url: 'DELETE', body: { id: label.id }, responseChannel });
