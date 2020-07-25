@@ -34,6 +34,7 @@ class PhotoBlock extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.openDetailTimeout = null;
   }
 
   componentDidMount() {
@@ -129,6 +130,11 @@ class PhotoBlock extends Component {
         </div>
         <div className='clt-PhotoBlock-tags'>
           <Button
+            onMouseEnter={() => {
+              this.openDetailTimeout =
+                setTimeout(() => this.setState({ detailIsVisible: true }), 650);
+            }}
+            onMouseLeave={() => clearTimeout(this.openDetailTimeout)}
             className='clt-PhotoBlock-detail-btn'
             size='small'
             icon={<ProfileOutlined />}
