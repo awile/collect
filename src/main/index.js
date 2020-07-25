@@ -26,8 +26,8 @@ export function teardownListeners() {
 }
 
 export async function setupApp () {
-  await initDB();
   await createDirectories();
+  await initDB();
 }
 
 async function createDirectories() {

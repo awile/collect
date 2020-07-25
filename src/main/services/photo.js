@@ -27,12 +27,11 @@ export async function search(params = {}) {
       .orderBy('photos.created_at', 'desc');
     photos = await query;
   } else {
-    let query = knex(PhotoLabels)
-      .join(Photos, 'photoLabels.photo', 'photos.id')
+    let query = knex(Photos)
       .select()
       .offset(queryOffset)
       .limit(querySize)
-      .orderBy('photos.created_at', 'desc');
+      .orderBy('created_at', 'desc');
     photos = await query;
   }
   const photoLabels =
