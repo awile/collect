@@ -41,10 +41,14 @@ class PhotoBlock extends Component {
     this.setState({ photoLabels: photo.labels ?? [] })
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { photoLabels, options, searchValue } = this.state;
     const { photo, labels } = this.props
     const labelsEqual = (l1, l2) => l1.id === l2.id && l1.name === l2.name;
+
+    if (prevProps.photo.name !== photo.name) {
+      this.setState({ photoLabels: photo.labels });
+    }
 
     if (options.length !== labels.length ||
       !options.every((l, i) => labelsEqual(l, labels[i]))) {
@@ -99,13 +103,15 @@ class PhotoBlock extends Component {
     if (!photo) { return null; }
 
     const { file_type, location, name } = photo;
-    const photoLabelIds = photoLabels.map(p => p.id);
 
-    let labelToDisplayId = photoLabelIds[0];
-    if (photoLabelIds.includes(selectedLabelId)) {
-      labelToDisplayId = selectedLabelId;
+    let labelToDisplay = null;
+    if (selectedLabelId) {
+      labelToDisplay = photoLabels.find(l => l.id === selectedLabelId);
+    } else {
+      labelToDisplay = photoLabels[0];
     }
-    const labelToDisplay = labelToDisplayId ? labels.find(l => l.id === labelToDisplayId) : null;
+
+    const photoLabelIds = photoLabels.map(l => l.id);
     const photoLabelsNotAdded = labels.filter(l => !photoLabelIds.includes(l.id));
     const dropdownOptions = searchOptions(searchValue, photoLabelsNotAdded);
 
@@ -182,7 +188,8 @@ class PhotoBlock extends Component {
 PhotoBlock.propTypes = {
   className: PropTypes.string,
   style: PropTypes.any,
-  labels: PropTypes.arrayOf(PropTypes.object)
+  labels: PropTypes.arrayOf(PropTypes.object),
+  selectedLabelId: PropTypes.string
 }
 
 export default PhotoBlock;
