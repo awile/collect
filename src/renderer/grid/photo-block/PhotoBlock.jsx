@@ -99,7 +99,7 @@ class PhotoBlock extends Component {
   }
 
   render() {
-    const { className, photo, labels, selectedLabelId, style } = this.props;
+    const { className, photo, labels, onDelete, selectedLabelId, style } = this.props;
     const { addingLabel, detailIsVisible, photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
@@ -150,6 +150,7 @@ class PhotoBlock extends Component {
             <DetailPage
               photo={{ ...photo, labels: photoLabels }}
               labels={labels}
+              onDelete={(photoId) => {  this.setState({ detailIsVisible: false }); onDelete(photoId)}}
               onRemove={this.handleRemove}
               onSelect={this.handleSelect}
             />
@@ -195,7 +196,8 @@ PhotoBlock.propTypes = {
   className: PropTypes.string,
   style: PropTypes.any,
   labels: PropTypes.arrayOf(PropTypes.object),
-  selectedLabelId: PropTypes.string
+  selectedLabelId: PropTypes.string,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default PhotoBlock;

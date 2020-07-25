@@ -83,3 +83,17 @@ export async function create(photo) {
   }
   return photo;
 }
+
+export async function deletePhoto(photo) {
+  if (!photo.id) {
+    throw new Error('No Photo id given to delete');
+  }
+  const photoId = photo.id;
+  const knex = getConn();
+  const query = knex(Photos)
+    .del()
+    .where('id', photoId);
+  const result = await query;
+  await PhotoLabelService.removeAllWithPhoto(photoId);
+  return ({ deleted: result === 1 });
+}

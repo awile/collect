@@ -9,5 +9,8 @@ export async function handlePhotoRequests(event, request) {
   } else if (url === 'CREATE') {
     const result = await PhotoService.create(body);
     event.reply(responseChannel, result);
+  } else if (url === 'DELETE') {
+    const result = await PhotoService.deletePhoto(body);
+    event.reply(responseChannel, result);
   }
 }

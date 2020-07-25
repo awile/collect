@@ -25,6 +25,7 @@ class Grid extends Component {
     this.handleResize = this.handleResize.bind(this);
     this.ref = React.createRef();
     this.collectionRef = React.createRef();
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
@@ -66,6 +67,13 @@ class Grid extends Component {
     }
   }
 
+  handleDelete(photoId) {
+    const query = { id: photoId };
+    const responseChannel = `response-photos-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, (event, result) => this.getPhotos());
+    IPCRenderer.send('photos-request', { url: 'DELETE', body: query, responseChannel });
+  }
+
   async getPhotos() {
     const { selectedLabelId } = this.props;
     let query = {};
@@ -84,7 +92,14 @@ class Grid extends Component {
     const photoBlockRenderer = ({index, key, style}) => {
       const photo = photos[index];
       return (
-        <PhotoBlock className={style.cell} selectedLabelId={selectedLabelId} style={style} key={key} photo={photo} labels={labels} />
+        <PhotoBlock
+          className={style.cell}
+          selectedLabelId={selectedLabelId}
+          style={style}
+          key={key}
+          photo={photo}
+          onDelete={this.handleDelete}
+          labels={labels} />
       );
     };
     const cellSizeAndPositionGetter = (width, height, index) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Col, Layout, Row, Select, Tag } from 'antd';
+import { Button, Col, Popconfirm, Layout, Row, Select, Tag } from 'antd';
 
 import './_detail-page.scss';
 
@@ -21,7 +21,7 @@ class DetailPage extends React.Component {
   }
 
   render() {
-    const { labels, onSelect, onRemove, photo } = this.props;
+    const { labels, onDelete, onSelect, onRemove, photo } = this.props;
     const { location } = photo;
     const { searchValue } = this.state;
     const labelIds = photo.labels.map(l => l.id);
@@ -69,6 +69,22 @@ class DetailPage extends React.Component {
                 <span>{photo.file_type.toUpperCase()}</span>
               </Col>
             </Row>
+            <Row className='clt-DetailPage-delete-row'>
+              <Col>
+                <Popconfirm
+                  placement='top'
+                  title='Are you sure you want to delete this photo'
+                  onConfirm={() => onDelete(photo.id)}
+                  okText='Delete'
+                  cancelText='Cancel'>
+                  <Button
+                    type='danger'
+                    size='small'>
+                    Delete
+                  </Button>
+                </Popconfirm>
+              </Col>
+            </Row>
           </div>
         </div>
       </div>
@@ -78,7 +94,8 @@ class DetailPage extends React.Component {
 
 DetailPage.propTypes = {
   photo: PropTypes.object,
-  onRemove: PropTypes.func
+  onRemove: PropTypes.func,
+  onDelete: PropTypes.func
 };
 
 export default DetailPage;
