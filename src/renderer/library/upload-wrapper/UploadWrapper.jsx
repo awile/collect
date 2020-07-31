@@ -63,6 +63,7 @@ class UploadWrapper extends React.Component {
     e.stopPropagation();
     const files = e.dataTransfer.files;
     ([...files]).forEach(file => this.handleFile(file));
+    message.success(`${files.length} Files Uploaded`);
     this.setState({ fileIsHovering: false });
   }
 
@@ -81,7 +82,6 @@ class UploadWrapper extends React.Component {
         if (onUpload) {
           onUpload();
         }
-        message.success('File Uploaded.');
       });
       IPCRenderer.send('photos-request', { url: 'CREATE', body: { ...newPhoto, ...params }, responseChannel });
     }
