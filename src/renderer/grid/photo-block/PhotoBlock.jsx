@@ -30,10 +30,14 @@ class PhotoBlock extends Component {
       addingLabel: false,
       detailIsVisible: false
     };
+    this.clickInFlight = false;
+    this.timer = null;
 
     this.handleSearch = this.handleSearch.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.openDetailTimeout = null;
   }
 
@@ -59,6 +63,25 @@ class PhotoBlock extends Component {
       });
       this.setState({ options: labels, photoLabels: newPhotoLabels });
     }
+  }
+
+  handleClick() {
+    if (this.clickInFlight) {
+      clearTimeout(this.timer);
+      this.handleDoubleClick();
+      this.clickInFlight = false;
+      return;
+    }
+    this.clickInFlight = true;
+    this.timer = setTimeout(() => {
+      console.log('single click');
+      this.clickInFlight = false;
+    }, 230);
+  }
+
+  handleDoubleClick() {
+    console.log('double click');
+    this.setState({ detailIsVisible: true });
   }
 
   handleSearch(query) {
@@ -118,7 +141,9 @@ class PhotoBlock extends Component {
 
     return (
       <div className={`clt-PhotoBlock ${className}`} style={style}>
-        <div className='clt-PhotoBlock-container'>
+        <div
+          className='clt-PhotoBlock-container'
+          onClick={this.handleClick}>
           { file_type === 'mp4' ?
           <video width='200' autoplay>
             <source src={`file://${location}`} type='video/mp4'></source>
@@ -129,16 +154,6 @@ class PhotoBlock extends Component {
           }
         </div>
         <div className='clt-PhotoBlock-tags'>
-          <Button
-            onMouseEnter={() => {
-              this.openDetailTimeout =
-                setTimeout(() => this.setState({ detailIsVisible: true }), 650);
-            }}
-            onMouseLeave={() => clearTimeout(this.openDetailTimeout)}
-            className='clt-PhotoBlock-detail-btn'
-            size='small'
-            icon={<ProfileOutlined />}
-            onClick={() => this.setState({ detailIsVisible: true })} />
           <Modal
             title={`${name.toUpperCase()}`}
             mask={false}

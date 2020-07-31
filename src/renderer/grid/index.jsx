@@ -16,6 +16,7 @@ class Grid extends Component {
 
     this.state = {
       photos: [],
+      selectedPhotos: [],
       width: 0,
       height: 0
     };
