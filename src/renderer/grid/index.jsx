@@ -26,6 +26,7 @@ class Grid extends Component {
     this.ref = React.createRef();
     this.collectionRef = React.createRef();
     this.handleDelete = this.handleDelete.bind(this);
+    this.getPhotos = this.getPhotos.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +76,7 @@ class Grid extends Component {
   }
 
   async getPhotos() {
+    const { photos } = this.state;
     const { selectedLabelId } = this.props;
     let query = {};
     if (selectedLabelId) {
@@ -126,7 +128,8 @@ class Grid extends Component {
                   ref={this.collectionRef}
                   cellCount={photos.length}
                   cellRenderer={photoBlockRenderer}
-                  cellSizeAndPositionGetter={({ index }) => cellSizeAndPositionGetter(width, height, index)}
+                  cellSizeAndPositionGetter={({ index }) =>
+                    cellSizeAndPositionGetter(width, height, index)}
                   height={height}
                   width={width ?? 100}
                   data={labels} />

@@ -12,7 +12,6 @@ import * as PhotoLabelService from './photoLabel';
 
 export async function search(params = {}) {
   const { size, offset, labels } = params;
-  const querySize = size || 100;
   const queryOffset = offset || 0;
   const knex = getConn();
 
@@ -23,14 +22,12 @@ export async function search(params = {}) {
       .select()
       .whereIn('photoLabels.label', labels)
       .offset(queryOffset)
-      .limit(querySize)
       .orderBy('photos.created_at', 'desc');
     photos = await query;
   } else {
     let query = knex(Photos)
       .select()
       .offset(queryOffset)
-      .limit(querySize)
       .orderBy('created_at', 'desc');
     photos = await query;
   }

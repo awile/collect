@@ -1,20 +1,24 @@
 
 import { app, BrowserWindow, protocol } from 'electron';
-import path from 'path';
+import * as path from 'path';
 import { setupApp, setupListeners, teardownListeners } from './main/';
 import { ipcMain } from 'electron'
+import * as url from 'url';
 
 function createWindow() {
+  const isDev = process.env.NODE_ENV === 'development';
+  let preferences =  {
+    nodeIntegration: true
+  };
+  if (isDev) {
+    preferences.webSecurity = false;
+  }
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
     titleBarStyle: 'hiddenInset',
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false
-    }
+    webPreferences: preferences
   });
-
 
   let mainReady = false;
   ipcMain.on('main-status-check', (event, args) => {
@@ -24,7 +28,15 @@ function createWindow() {
     setupApp().then(() => { mainReady = true; });
   });
 
-  mainWindow.loadURL('http://localhost:3000');
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+  } else {
+    const startUrl = url.format({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file:'
+    });
+    mainWindow.loadURL(startUrl);
+  }
 }
 
 app.on('ready', () =>  {

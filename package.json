@@ -6,12 +6,19 @@
   "author": "Adam Wiles <adam.wiles@newscred.com>",
   "license": "MIT",
   "build": {
-    "appId": "com.test.collect",
+    "appId": "com.test.Collect",
     "files": [
       "dist/**/*",
       "node_modules/**/*",
       "package.json"
-    ]
+    ],
+    "directories": {
+        "output": "./build"
+    },
+    "mac": {
+        "target": "dmg",
+        "icon": "./build/icon.icns"
+    }
   },
   "externals": [
     "sqlite3",
@@ -22,7 +29,8 @@
     "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "release": "build",
-    "start": "yarn run clean && yarn run start-main && concurrently 'yarn run start-renderer' 'wait-on http://localhost:3000 && electron .'",
+    "start-dev": "yarn run clean && yarn run start-main && concurrently 'yarn run start-renderer' 'wait-on http://localhost:3000 && NODE_ENV=development electron .'",
+    "start-app": "NODE_ENV=development electron .",
     "start-main": "tsc --p ./tsconfig.json",
     "start-renderer": "parcel -p 3000 ./src/index.html"
   },
