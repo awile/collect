@@ -1,46 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { IPCRenderer } from '../../ipc';
 import moment from 'moment';
 
-import { message, Button, Col, Popconfirm, Layout, Row, Select, Tag } from 'antd';
+import { message, Button, Col, Popconfirm, Row, Select, Tag } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
 import './_detail-page.scss';
 
-class DetailPage extends React.Component {
-  constructor(props) {
-    super(props);
+function DetailPage({ labels, photo, onRemove, onDelete, onSelect }) {
+  const [searchValue, setSearchValue] = useState('');
 
-    this.state = {
-      searchValue: ''
-    };
-
-    this.handleSearch = this.handleSearch.bind(this);
-    this.downloadPhoto = this.downloadPhoto.bind(this);
-  }
-
-  handleSearch(query) {
-    this.setState({ searchValue: query })
-  }
-
-  downloadPhoto() {
-    const { photo } = this.props;
+  const downloadPhoto = () => {
     const responseChannel = `response-download-${moment().toISOString()}`;
     IPCRenderer.once(responseChannel, () => {
       message.success(`${photo.name}.${photo.file_type} downloaded`);
     });
     IPCRenderer.send('photos-request', { url: 'DOWNLOAD', body: { photo: photo.id }, responseChannel });
-  }
+  };
 
-  render() {
-    const { labels, onDelete, onSelect, onRemove, photo } = this.props;
-    const { location } = photo;
-    const { searchValue } = this.state;
-    const labelIds = photo.labels.map(l => l.id);
-    const dropdownOptions = labels.filter(l => !labelIds.includes(l.id));
+  const { location } = photo;
+  const labelIds = (photo.labels ?? []).map(l => l.id);
+  const dropdownOptions = labels.filter(l => !labelIds.includes(l.id));
 
-    return (
+  return (
       <div className='clt-DetailPage'>
         <div className='clt-DetailPage-container'>
           <div className='clt-DetailPage-left'>
@@ -55,11 +38,11 @@ class DetailPage extends React.Component {
                     showSearch
                     style={{ width: 100 }}
                     placeholder="add a label"
-                    filterOption={(query, option) => option.indexOf(query) >= 0}
+                    filterOption={(query, option) => option.children.indexOf(query)  >= 0 }
                     value={searchValue}
                     size='small'
                     onSelect={onSelect}
-                    onSearch={this.handleSearch}>
+                    onSearch={query => setSearchValue(query)}>
                     { dropdownOptions.map(l => <Option key={l.id} value={l.id}>{l.name}</Option>) }
                   </Select>
                 </div>
@@ -87,7 +70,7 @@ class DetailPage extends React.Component {
                 <Button
                   icon={<DownloadOutlined />}
                   size='small'
-                  onClick={this.downloadPhoto}>
+                  onClick={downloadPhoto}>
                   Download
                 </Button>
                 <Popconfirm
@@ -107,14 +90,15 @@ class DetailPage extends React.Component {
           </div>
         </div>
       </div>
-    );
-  }
+  );
 }
 
 DetailPage.propTypes = {
   photo: PropTypes.object,
+  labels: PropTypes.array,
   onRemove: PropTypes.func,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  onSelect: PropTypes.func
 };
 
 export default DetailPage;
