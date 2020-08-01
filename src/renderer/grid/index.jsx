@@ -241,6 +241,7 @@ class Grid extends Component {
               </div>
               <div className='clt-Grid-options-selector'>
                 <CreatableSelect
+                  autoFocus
                   classNamePrefix="mySelect"
                   isClearable
                   isMulti
