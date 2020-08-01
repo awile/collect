@@ -1,81 +1,75 @@
 
 import "regenerator-runtime/runtime"; // required to fix error
-import React, { Component } from 'react'; import moment from 'moment';
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 
 import NavBar from './nav-bar/index';
 import LeftPane from './left-pane/index';
 import Grid from './grid/index';
 import { IPCRenderer } from './ipc';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
+import { LabelsContext } from './global-state/';
 
 import './_app.scss';
 
 const { Content, Sider } = Layout;
 
-class App extends Component {
 
-  constructor() {
-    super();
+function App() {
 
-    this.state = {
-      loading: true,
-      selectedLabel: null,
-      labels: []
-    };
-    this.onChange = this.onChange.bind(this);
-    this.getLabels = this.getLabels.bind(this);
+  const [loading, setLoading] = useState(true);
+  const [selectedLabel, setSelectedLabel] = useState(null);
+  const [labels, setLabels] = useState([]);
 
-    const statusCheckChannel = 'main-status-check';
-    IPCRenderer.on('main-status', (event, check) => {
-      if (check.status === 'ok') {
-        this.setState({ loading: false });
-        IPCRenderer.removeAllListeners('main-status');
-        this.getLabels();
-      } else {
-        IPCRenderer.send(statusCheckChannel, []);
-      }
-    });
-    IPCRenderer.send(statusCheckChannel, []);
-  }
-
-  onChange(label) {
-    this.setState({ selectedLabel: label });
-  }
-
-  getLabels() {
-    const query = {};
+  const getLabels = () => {
     const responseChannel = `response-labels-${moment().toISOString()}`;
-    IPCRenderer.once(responseChannel, (event, labels) => this.setState({ labels }));
-    IPCRenderer.send('labels-request', { url: 'SEARCH', body: query, responseChannel });
+    IPCRenderer.once(responseChannel, (_, labels) => setLabels(labels));
+    IPCRenderer.send('labels-request', { url: 'SEARCH', body: {} , responseChannel });
   }
 
-  render() {
-    const { labels, loading, selectedLabel } = this.state;
+  useEffect(() => {
+    if (loading) {
+      const statusCheckChannel = 'main-status-check';
+      IPCRenderer.on('main-status', (_, check) => {
+        if (check.status === 'ok') {
+          setLoading(false);
+          IPCRenderer.removeAllListeners('main-status');
+          getLabels();
+        } else {
+          IPCRenderer.send(statusCheckChannel, []);
+        }
+      });
+      IPCRenderer.send(statusCheckChannel, []);
+    }
+  });
 
-    return (
+  return (
+    <LabelsContext.Provider value={{ labels, setLabels }}>
       <Layout className='clt-App'>
         <NavBar
           selectedLabelName={selectedLabel ? selectedLabel.name : ''}
           labels={labels}
-          onChange={this.onChange} />
+          onChange={label => setSelectedLabel(label)} />
         <Layout>
             <div className='clt-App-mainContainer'>
               <Sider className='clt-App-sider' width={200}>
                 <LeftPane
+                  labels={labels}
+                  setLabels={setLabels}
                   selectedLabel={selectedLabel}
-                  onChange={this.onChange}
-                  onLabelsUpdate={(labels) => this.setState({ labels })}/>
+                  onChange={label => setSelectedLabel(label)}
+                  onLabelsUpdate={setLabels}/>
               </Sider>
               <Content>
                 { loading ?
                   <div className='clt-App-loading'>loading...</div> :
-                  <Grid selectedLabelId={selectedLabel && selectedLabel.id} labels={labels} /> }
+                  <Grid selectedLabelId={selectedLabel && selectedLabel.id} labels={labels} setLabels={setLabels}/> }
               </Content>
             </div>
         </Layout>
       </Layout>
-    );
-  }
+    </LabelsContext.Provider>
+  );
 }
 
 export default App;

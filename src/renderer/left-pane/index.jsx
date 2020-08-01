@@ -14,7 +14,7 @@ class LeftPane extends Component {
     super();
 
     this.state = {
-      labels: []
+      placeholderLabels: [],
     };
 
     this.handleAddLabel = this.handleAddLabel.bind(this);
@@ -24,27 +24,25 @@ class LeftPane extends Component {
     this.handleLabelEdit = this.handleLabelEdit.bind(this);
   }
 
-  componentDidMount() {
-    this.getLabels();
-  }
-
-  getLabels() {
-    const query = {};
-    const responseChannel = `response-labels-${moment().toISOString()}`;
-    IPCRenderer.once(responseChannel, (event, labels) => this.setState({ labels }));
-    IPCRenderer.send('labels-request', { url: 'SEARCH', body: query, responseChannel });
-  }
 
   handleAddLabel() {
-    const { labels } = this.state;
-    this.setState({ labels: [{ id: `${labels.length + 1}`, isPlaceholder: true }].concat(labels) });
+    const { placeholderLabels } = this.state;
+    const { labels } = this.props
+    const newPlaceholder = {
+      id: `${labels.length + placeholderLabels.length + 1}`,
+      isCreating: true,
+      isPlaceholder: true
+    };
+    this.setState({ placeholderLabels: [newPlaceholder].concat(placeholderLabels) });
   }
 
   onLabelCreate(oldLabel, newLabel) {
-    const { labels } = this.state;
+    const { placeholderLabels } = this.state;
+    const { labels } = this.props;
     const { onLabelsUpdate, onChange, selectedLabel } = this.props;
-    const updatedLabels = labels.map(l => l.id === oldLabel.id ? newLabel : l);
-    this.setState({ labels: updatedLabels });
+    const filteredLabels = placeholderLabels.filter(pl => pl.id !== oldLabel.id);
+    this.setState({ placeholderLabels: filteredLabels });
+    const updatedLabels = labels.map(l => l.id === newLabel.id ? newLabel: l);
     onLabelsUpdate(updatedLabels);
     if (selectedLabel && newLabel && selectedLabel.id === newLabel.id) {
       onChange(newLabel);
@@ -52,26 +50,18 @@ class LeftPane extends Component {
   }
 
   onLabelCancel(labelId) {
-    const { labels } = this.state;
-    const label = labels.find(l => l.id === labelId);
-    if (label && !label.name) {
-      const filteredLabels = labels.filter(l => l.id !== labelId);
-      this.setState({ labels: filteredLabels });
-    } else {
-      const updatedLabels = labels.map(l =>
-        l.id === labelId ? Object.assign(l, { isPlaceholder: false }): l);
-      this.setState({ labels: updatedLabels });
-    }
+    const { placeholderLabels} = this.state;
+    const filteredLabels = placeholderLabels.filter(l => l.id !== labelId);
+    this.setState({ placeholderLabels: filteredLabels });
   }
 
   handleLabelRemove(label) {
     const responseChannel = `response-labels-${moment().toISOString()}`;
     const { onLabelsUpdate } = this.props;
-    IPCRenderer.once(responseChannel, (event, resp) => {
+    IPCRenderer.once(responseChannel, (_, resp) => {
       if (resp.deleted) {
-        const { labels } = this.state;
+        const { labels } = this.props;
         const filteredLabels = labels.filter(l => l.id !== label.id);
-        this.setState({ labels: filteredLabels });
         onLabelsUpdate(filteredLabels);
       }
     });
@@ -79,15 +69,17 @@ class LeftPane extends Component {
   }
 
   handleLabelEdit(label) {
-    const { labels } = this.state;
-    const updatedLabels = labels.map(l =>
-      l.id === label.id ? Object.assign(l, { isPlaceholder: true }) : l);
-    this.setState({ labels: updatedLabels });
+    const { placeholderLabels } = this.state;
+    const { labels } = this.props;
+    const labelToEdit = labels.find(l => l.id === label.id);
+    this.setState({
+      placeholderLabels: placeholderLabels.concat([{ ...labelToEdit, isPlaceholder: true }])
+    });
   }
 
   render() {
-    const { labels } = this.state;
-    const { selectedLabel, onChange } = this.props;
+    const { placeholderLabels } = this.state;
+    const { labels, selectedLabel, onChange } = this.props;
 
     const actions = (label) => [
       <EditOutlined onClick={() => this.handleLabelEdit(label)}/>,
@@ -109,6 +101,13 @@ class LeftPane extends Component {
               onClick={() => onChange('')}>clear</Button> }
         </div>
     );
+    const mergeLabels = (labels, placeholders) => {
+      const creatingPlaceholders = placeholders.filter(p => p.isCreating);
+      return creatingPlaceholders.concat(labels.map(l => {
+        const placeholder = placeholders.find(p => p.id === l.id);
+        return !!placeholder ? placeholder : l;
+      }));
+    }
     return (
       <div className='clt-LeftPane'>
         <List
@@ -118,7 +117,7 @@ class LeftPane extends Component {
           size='small'
           split={false}
           rowKey={label => label.id}>
-          { labels.map(label => (
+          { (mergeLabels(labels, placeholderLabels)).map(label => (
             <List.Item
               actions={label.isPlaceholder ? [] : actions(label)}
               key={label.id}
@@ -150,6 +149,8 @@ LeftPane.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string
   }),
+  labels: PropTypes.array,
+  setLabels: PropTypes.func,
   onChange: PropTypes.func,
   onLabelsUpdate: PropTypes.func
 };

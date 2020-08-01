@@ -6,7 +6,7 @@ import { IPCRenderer } from '../ipc';
 import { UploadWrapper } from  '../library/';
 import moment from 'moment';
 import { Button, Empty, message, Popconfirm } from 'antd';
-import { WindowScroller, Collection } from 'react-virtualized';
+import { Collection } from 'react-virtualized';
 import { DeleteOutlined } from '@ant-design/icons';
 import CreatableSelect from 'react-select/creatable';
 
@@ -127,6 +127,7 @@ class Grid extends Component {
   }
 
   createLabels(newLabels) {
+    const { labels, setLabels } = this.props;
     return new Promise((resolve) => {
       let labelsCreated = 0;
       let newLabelValues = [];
@@ -137,6 +138,7 @@ class Grid extends Component {
           newLabelValues.push(label);
           if (labelsCreated === newLabels.length) {
             message.success(`${newLabels.length} labels created`);
+            setLabels(labels.concat(newLabelValues));
             resolve(newLabelValues);
           }
         });
@@ -331,7 +333,8 @@ Grid.propTypes = {
   selectedLabelId: PropTypes.string,
   labels: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string
-  }))
+  })),
+  setLabels: PropTypes.func
 }
 
 export default Grid;
