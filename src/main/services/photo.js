@@ -6,7 +6,7 @@ import {
   PhotoLabels,
   Labels,
 } from '../db/';
-import { writePhoto } from './utils';
+import { removePhoto, writePhoto } from './utils';
 import * as PhotoLabelService from './photoLabel';
 
 
@@ -91,5 +91,25 @@ export async function deletePhoto(photo) {
     .where('id', photoId);
   const result = await query;
   await PhotoLabelService.removeAllWithPhoto(photoId);
+  return ({ deleted: result === 1 });
+}
+
+export async function deletePhotoBulk(body) {
+  if (!body.photos) {
+    throw new Error('No Photo ids given to delete');
+  }
+  const knex = getConn();
+  const filePathsQuery = await knex(Photos)
+    .select('location')
+    .whereIn('id', body.photos);
+  const photoFilePaths = await filePathsQuery;
+  const query = knex(Photos)
+    .del()
+    .whereIn('id', body.photos);
+  const result = await query;
+  await Promise.all(body.photos.map(p =>
+    PhotoLabelService.removeAllWithPhoto(p)));
+  await Promise.all(photoFilePaths.map(({ location }) =>
+    removePhoto(location)));
   return ({ deleted: result === 1 });
 }

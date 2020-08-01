@@ -5,8 +5,9 @@ import PhotoBlock from './photo-block/PhotoBlock';
 import { IPCRenderer } from '../ipc';
 import { UploadWrapper } from  '../library/';
 import moment from 'moment';
-import { Button, Empty, message } from 'antd';
+import { Button, Empty, message, Popconfirm } from 'antd';
 import { WindowScroller, Collection } from 'react-virtualized';
+import { DeleteOutlined } from '@ant-design/icons';
 import CreatableSelect from 'react-select/creatable';
 
 import './_index.scss';
@@ -34,6 +35,7 @@ class Grid extends Component {
     this.getPhotos = this.getPhotos.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleApplyLabels = this.handleApplyLabels.bind(this);
+    this.handlePhotosDelete = this.handlePhotosDelete.bind(this);
   }
 
   componentDidMount() {
@@ -55,6 +57,14 @@ class Grid extends Component {
     if (this.collectionRef) {
       this.collectionRef.current.recomputeCellSizesAndPositions();
     }
+  }
+
+  handlePhotosDelete() {
+    const { selectedPhotos } = this.state;
+    const query = { photos: selectedPhotos };
+    const responseChannel = `response-photos-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, () => { this.setState({ selectedPhotos: [] }); this.getPhotos(); });
+    IPCRenderer.send('photos-request', { url: 'DELETE_BULK', body: query, responseChannel });
   }
 
   componentDidUpdate(prevProps) {
@@ -278,6 +288,18 @@ class Grid extends Component {
                   type="primary">
                   Add Labels
                 </Button>
+                <Popconfirm
+                  title='Are you sure you want to delete this photo'
+                  onConfirm={this.handlePhotosDelete}
+                  okText='Delete'
+                  cancelText='Cancel'>
+                  <Button
+                    className='clt-Grid-delete-photos'
+                    icon={<DeleteOutlined />}
+                    size='small'>
+                    Delete Photos
+                  </Button>
+                </Popconfirm>
               </div>
             </React.Fragment>
           }
