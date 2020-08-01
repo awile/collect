@@ -16,6 +16,7 @@ import {
 const { Option } = Select;
 import { ProfileOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import DetailPage from '../detail-page/DetailPage';
+import { LabelsContext } from '../../global-state/';
 
 import './_photo-block.scss';
 
@@ -138,6 +139,8 @@ class PhotoBlock extends Component {
     }
 
     return (
+      <LabelsContext.Consumer>
+        { ({ setLabels }) => (
       <div className={`clt-PhotoBlock ${className} ${isSelected ? 'clt-PhotoBlock--selected' : ''}`} style={style}>
         <div
           className='clt-PhotoBlock-container'
@@ -160,13 +163,13 @@ class PhotoBlock extends Component {
             visible={detailIsVisible}
             onCancel={() => this.setState({ detailIsVisible: false })}
             onOk={() => this.setState({ detailIsVisible: false })}>
-            <DetailPage
-              photo={{ ...photo, labels: photoLabels }}
-              labels={labels}
-              onDelete={(photoId) => {  this.setState({ detailIsVisible: false }); onDelete(photoId)}}
-              onRemove={this.handleRemove}
-              onSelect={this.handleSelect}
-            />
+                <DetailPage
+                  photoId={photo.id}
+                  labels={labels}
+                  setLabels={setLabels}
+                  onDelete={(photoId) => {  this.setState({ detailIsVisible: false }); onDelete(photoId)}}
+                  onRemove={this.handleRemove}
+                  onSelect={this.handleSelect} />
           </Modal>
         </div>
         <div className='clt-PhotoBlock-labels'>
@@ -178,6 +181,8 @@ class PhotoBlock extends Component {
           }
         </div>
       </div>
+              )}
+            </LabelsContext.Consumer>
     );
   }
 }

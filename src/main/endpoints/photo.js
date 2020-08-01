@@ -6,6 +6,9 @@ export async function handlePhotoRequests(event, request) {
   if (url === 'SEARCH') {
     const photos = await PhotoService.search(body || {});
     event.reply(responseChannel, photos);
+  } else if (url === 'GET') {
+    const photos = await PhotoService.get(body.photoId);
+    event.reply(responseChannel, photos);
   } else if (url === 'CREATE') {
     const result = await PhotoService.create(body);
     event.reply(responseChannel, result);

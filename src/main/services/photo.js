@@ -43,7 +43,16 @@ export async function get(id) {
   }
   const knex = getConn();
   const query = knex(Photos).first().where('id', id);
-  return await query;
+  let photo = await query;
+  const labelsQuery = knex(Labels)
+    .join(PhotoLabels, 'photoLabels.label', 'labels.id')
+    .select()
+    .where('photo', photo.id);
+  const labels =  await labelsQuery;
+  if (labels) {
+    photo.labels = labels;
+  }
+  return photo;
 }
 
 export async function getLabels(photoId) {
