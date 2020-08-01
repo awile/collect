@@ -28,10 +28,11 @@
     "clean": "rm -rf dist/",
     "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "release": "build",
-    "start-dev": "yarn run clean && yarn run start-main && concurrently 'yarn run start-renderer' 'wait-on http://localhost:3000 && NODE_ENV=development electron .'",
+    "build": "yarn run compile-server && parcel build src/index.html --out-dir dist/ && cp ./collect.icns ./build/icon.icns",
+    "release": "electron-builder",
+    "start-dev": "yarn run clean && yarn run compile-server && concurrently 'yarn run start-renderer' 'wait-on http://localhost:3000 && NODE_ENV=development electron .'",
     "start-app": "NODE_ENV=development electron .",
-    "start-main": "tsc --p ./tsconfig.json",
+    "compile-server": "tsc --p ./tsconfig.json",
     "start-renderer": "parcel -p 3000 ./src/index.html"
   },
   "dependencies": {
