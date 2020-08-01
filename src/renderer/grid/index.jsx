@@ -18,6 +18,7 @@ class Grid extends Component {
     this.state = {
       photos: [],
       selectedPhotos: [],
+      pivotPhoto: null,
       labelsToApply: [],
       width: 0,
       height: 0
@@ -142,14 +143,31 @@ class Grid extends Component {
     IPCRenderer.send('photos-request', { url: 'DELETE', body: query, responseChannel });
   }
 
-  handleSelect(photoId) {
-    const { selectedPhotos } = this.state;
+  handleSelect(photoId, isShiftClick) {
+    const { photos, selectedPhotos } = this.state;
+    if (isShiftClick && this.pivotPhoto !== null) {
+      const selectedIndex = photos.findIndex((photo) => photo.id === photoId);
+      const pivotIndex = photos.findIndex((photo) => photo.id === this.pivotPhoto);
+      let selectAll = [];
+      if (selectedIndex === pivotIndex) {
+        selectAll = [{ id: photoId }];
+      } else if (selectedIndex > pivotIndex) {
+        selectAll = photos.slice(pivotIndex, selectedIndex + 1);
+      } else {
+        selectAll = photos.slice(selectedIndex, pivotIndex + 1);
+      }
+      this.setState({ selectedPhotos: selectAll.map(p => p.id) });
+      return;
+    }
+
     let updatedSelectedPhotos = selectedPhotos;
     const index = updatedSelectedPhotos.indexOf(photoId);
-    if (index >= 0) {
+    if (index >= 0) { // already selected
       updatedSelectedPhotos.splice(index, 1);
+      this.pivotPhoto = photoId;
     } else {
       updatedSelectedPhotos.push(photoId);
+      this.pivotPhoto = photoId;
     }
     this.setState({ selectedPhotos: updatedSelectedPhotos });
   }

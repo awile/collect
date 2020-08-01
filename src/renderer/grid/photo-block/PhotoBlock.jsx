@@ -65,7 +65,9 @@ class PhotoBlock extends Component {
     }
   }
 
-  handleClick() {
+  handleClick(e) {
+    const isShiftClick = e.shiftKey;
+    const isMetaClick = e.metaKey;
     const { photo, onSelectPhoto } = this.props;
     if (this.clickInFlight) {
       clearTimeout(this.timer);
@@ -75,7 +77,7 @@ class PhotoBlock extends Component {
     }
     this.clickInFlight = true;
     this.timer = setTimeout(() => {
-      onSelectPhoto(photo.id);
+      onSelectPhoto(photo.id, isShiftClick);
       this.clickInFlight = false;
     }, 230);
   }
