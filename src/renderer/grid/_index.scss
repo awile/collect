@@ -3,12 +3,42 @@
   background: #fff;
 }
 
+.select__value-container {
+  align-self: flex-start;
+}
+
 .clt-Grid {
   display: flex;
   flex-wrap: wrap;
   height: 100%;
   overflow-y: scroll;
   background: #fff;
+
+  &-options-bar {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    padding: 0 15px;
+    width: 100%;
+  }
+
+  &-add-labels {
+    width: 350px;
+  }
+
+  &-options-selector {
+    display: flex;
+    margin: 12px 0 0 15px;
+  }
+
+  &-apply-labels {
+    margin-left: 15px;
+    margin-top: 2px;
+  }
+
+  &-select-info {
+    margin-top: 10px;
+  }
 
   &-container {
     height: 100%;

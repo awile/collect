@@ -5,6 +5,10 @@
   max-height: 250px;
   max-width: 300px;
 
+  &--selected {
+    border: 1px solid black;
+  }
+
   &-container {
     display: flex;
     flex-direction: column;

@@ -66,6 +66,7 @@ class PhotoBlock extends Component {
   }
 
   handleClick() {
+    const { photo, onSelectPhoto } = this.props;
     if (this.clickInFlight) {
       clearTimeout(this.timer);
       this.handleDoubleClick();
@@ -74,13 +75,12 @@ class PhotoBlock extends Component {
     }
     this.clickInFlight = true;
     this.timer = setTimeout(() => {
-      console.log('single click');
+      onSelectPhoto(photo.id);
       this.clickInFlight = false;
     }, 230);
   }
 
   handleDoubleClick() {
-    console.log('double click');
     this.setState({ detailIsVisible: true });
   }
 
@@ -122,7 +122,7 @@ class PhotoBlock extends Component {
   }
 
   render() {
-    const { className, photo, labels, onDelete, selectedLabelId, style } = this.props;
+    const { className, photo, labels, onDelete, isSelected, selectedLabelId, style } = this.props;
     const { addingLabel, detailIsVisible, photoLabels, searchValue } = this.state;
     if (!photo) { return null; }
 
@@ -135,12 +135,8 @@ class PhotoBlock extends Component {
       labelToDisplay = photoLabels[0];
     }
 
-    const photoLabelIds = photoLabels.map(l => l.id);
-    const photoLabelsNotAdded = labels.filter(l => !photoLabelIds.includes(l.id));
-    const dropdownOptions = searchOptions(searchValue, photoLabelsNotAdded);
-
     return (
-      <div className={`clt-PhotoBlock ${className}`} style={style}>
+      <div className={`clt-PhotoBlock ${className} ${isSelected ? 'clt-PhotoBlock--selected' : ''}`} style={style}>
         <div
           className='clt-PhotoBlock-container'
           onClick={this.handleClick}>
@@ -170,29 +166,6 @@ class PhotoBlock extends Component {
               onSelect={this.handleSelect}
             />
           </Modal>
-          { addingLabel ?
-            <Select
-              autoFocus
-              defaultOpen
-              showSearch
-              bordered={false}
-              style={{ width: 100 }}
-              placeholder="add a label"
-              onBlur={() => this.setState({ addingLabel: false })}
-              filterOption={() => true}
-              value={searchValue}
-              size='small'
-              onSelect={this.handleSelect}
-              onSearch={this.handleSearch}>
-              {
-                dropdownOptions.map(l => <Option key={l.id} value={l.id}>{l.name}</Option>)
-              }
-            </Select> :
-            <Button
-              size='small'
-              icon={<PlusOutlined />}
-              onClick={() => this.setState({ addingLabel: true })} />
-          }
         </div>
         <div className='clt-PhotoBlock-labels'>
           { labelToDisplay &&
@@ -212,7 +185,9 @@ PhotoBlock.propTypes = {
   style: PropTypes.any,
   labels: PropTypes.arrayOf(PropTypes.object),
   selectedLabelId: PropTypes.string,
-  onDelete: PropTypes.func.isRequired
+  onDelete: PropTypes.func.isRequired,
+  onSelectPhoto: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool
 }
 
 export default PhotoBlock;

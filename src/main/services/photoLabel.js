@@ -26,6 +26,28 @@ export async function create(labelRelation) {
   return newPhotoLabelRelation;
 }
 
+export async function createBulk(body) {
+  if (!body.labels || !body.photos) {
+    throw new Error('Labels & Photo ids required');
+  }
+  const knex = getConn();
+  const { photos, labels } = body;
+  let newPhotoLabelRelations = [];
+  photos.forEach(photoId => {
+    labels.forEach(labelId => {
+      const newPhotoLabelRelation = {
+        id: getUuid(),
+        label: labelId,
+        photo: photoId
+      };
+      newPhotoLabelRelations.push(newPhotoLabelRelation);
+    });
+  });
+  await Promise.all(newPhotoLabelRelations.map(newPhotoLabelRelation =>
+    knex(PhotoLabels).insert(newPhotoLabelRelation)));
+  return newPhotoLabelRelations;
+}
+
 export async function get(body) {
   if (!body.photoId) {
     throw new Error('No photoId found to query label relations');

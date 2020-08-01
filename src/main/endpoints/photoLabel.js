@@ -10,6 +10,8 @@ export async function handlePhotoLabelReequest(event, request) {
     response = await PhotoLabelService.get(body);
   } else if (url === 'DELETE') {
     response = await PhotoLabelService.deletePhotoLabel(body);
+  } else if (url === 'CREATE_BULK') {
+    response = await PhotoLabelService.createBulk(body);
   }
   event.reply(responseChannel, response);
 }

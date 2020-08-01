@@ -13,11 +13,11 @@
       "package.json"
     ],
     "directories": {
-        "output": "./build"
+      "output": "./build"
     },
     "mac": {
-        "target": "dmg",
-        "icon": "./build/icon.icns"
+      "target": "dmg",
+      "icon": "./build/icon.icns"
     }
   },
   "externals": [
@@ -53,6 +53,7 @@
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-externals": "^0.5.0",
     "prop-types": "^15.7.2",
+    "react-select": "^3.1.0",
     "sass": "^1.26.9",
     "typescript": "^3.9.6",
     "wait-on": "^5.0.1"
