@@ -54,7 +54,13 @@
   }
 
   &-delete-row {
+    width: 100%;
     position: absolute;
     bottom: 0;
+    .ant-col {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
   }
 }

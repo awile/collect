@@ -43,4 +43,13 @@
   &-detail-btn {
     margin-right: auto;
   }
+
+  &-delete-row {
+    width: 100%;
+    
+    .ant-col {
+      justify-content: space-between;
+      display: flex;
+    }
+  }
 }

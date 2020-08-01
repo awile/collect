@@ -15,5 +15,8 @@ export async function handlePhotoRequests(event, request) {
   } else if (url === 'DELETE_BULK') {
     const result = await PhotoService.deletePhotoBulk(body);
     event.reply(responseChannel, result);
+  } else if (url === 'DOWNLOAD') {
+    const result = await PhotoService.downloadPhoto(body);
+    event.reply(responseChannel, result);
   }
 }

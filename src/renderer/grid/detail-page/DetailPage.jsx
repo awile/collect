@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IPCRenderer } from '../../ipc';
+import moment from 'moment';
 
-import { Button, Col, Popconfirm, Layout, Row, Select, Tag } from 'antd';
+import { message, Button, Col, Popconfirm, Layout, Row, Select, Tag } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 import './_detail-page.scss';
 
@@ -14,10 +17,20 @@ class DetailPage extends React.Component {
     };
 
     this.handleSearch = this.handleSearch.bind(this);
+    this.downloadPhoto = this.downloadPhoto.bind(this);
   }
 
   handleSearch(query) {
     this.setState({ searchValue: query })
+  }
+
+  downloadPhoto() {
+    const { photo } = this.props;
+    const responseChannel = `response-download-${moment().toISOString()}`;
+    IPCRenderer.once(responseChannel, () => {
+      message.success(`${photo.name}.${photo.file_type} downloaded`);
+    });
+    IPCRenderer.send('photos-request', { url: 'DOWNLOAD', body: { photo: photo.id }, responseChannel });
   }
 
   render() {
@@ -71,6 +84,12 @@ class DetailPage extends React.Component {
             </Row>
             <Row className='clt-DetailPage-delete-row'>
               <Col>
+                <Button
+                  icon={<DownloadOutlined />}
+                  size='small'
+                  onClick={this.downloadPhoto}>
+                  Download
+                </Button>
                 <Popconfirm
                   placement='top'
                   title='Are you sure you want to delete this photo'
