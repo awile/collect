@@ -20,6 +20,15 @@
     height: 40px;
     padding: 0 15px;
     width: 100%;
+    position: fixed;
+    z-index: 10;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  &-upload {
+    margin-top: 40px;
+    overflow: scroll;
   }
 
   &-add-labels {

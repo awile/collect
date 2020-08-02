@@ -307,7 +307,7 @@ class Grid extends Component {
             </React.Fragment>
           }
         </div>
-        <UploadWrapper params={{ label: selectedLabelId }} onUpload={this.onFileUpload}>
+        <UploadWrapper className='clt-Grid-upload' params={{ label: selectedLabelId }} onUpload={this.onFileUpload}>
           <div className='clt-Grid-container' ref={this.handleRef}>
             {
               photos.length === 0 ?

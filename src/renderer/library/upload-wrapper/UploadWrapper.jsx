@@ -90,10 +90,10 @@ class UploadWrapper extends React.Component {
 
   render() {
     const { fileIsHovering } = this.state;
-    const { children } = this.props;
+    const { className, children } = this.props;
 
     return (
-      <div className={`lib-UploadWrapper ${fileIsHovering ? 'lib-UploadWrapper--active': ''}`} ref={this.ref}>
+      <div className={`lib-UploadWrapper ${className ?? ''} ${fileIsHovering ? 'lib-UploadWrapper--active': ''}`} ref={this.ref}>
         <div className='lib-UploadWrapper-message'>
           <FileAddOutlined style={{ fontSize: 40 }} />
           <div className='lib-UploadWrapper-text'>Drop File to Upload</div>
@@ -105,6 +105,7 @@ class UploadWrapper extends React.Component {
 }
 
 UploadWrapper.propTypes = {
+  className: PropTypes.string,
   onUpload: PropTypes.func,
   params: PropTypes.object
 };
