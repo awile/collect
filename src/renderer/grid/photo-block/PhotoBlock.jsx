@@ -159,6 +159,7 @@ class PhotoBlock extends Component {
             title={`${name.toUpperCase()}`}
             mask={false}
             maskClosable={true}
+            destroyOnClose={true}
             width={800}
             visible={detailIsVisible}
             onCancel={() => this.setState({ detailIsVisible: false })}

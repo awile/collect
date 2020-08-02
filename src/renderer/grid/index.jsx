@@ -63,7 +63,7 @@ class Grid extends Component {
     const { selectedPhotos } = this.state;
     const query = { photos: selectedPhotos };
     const responseChannel = `response-photos-${moment().toISOString()}`;
-    IPCRenderer.once(responseChannel, () => { this.setState({ selectedPhotos: [] }); this.getPhotos(); });
+    IPCRenderer.once(responseChannel, () => { this.setState({ photos: [] }); this.getPhotos(); });
     IPCRenderer.send('photos-request', { url: 'DELETE_BULK', body: query, responseChannel });
   }
 
@@ -118,7 +118,7 @@ class Grid extends Component {
     };
     const responseChannel = `response-photoLabels-${moment().toISOString()}`;
     IPCRenderer.once(responseChannel, () => {
-      this.setState({ photos: [], selectedPhotos: [], labelsToApply: [] }, () => {
+      this.setState({  selectedPhotos: [], labelsToApply: [] }, () => {
         message.success(`${labels.length} labels added to ${selectedPhotos.length} photos`);
       });
       this.getPhotos();
@@ -244,10 +244,8 @@ class Grid extends Component {
               <div className='clt-Grid-options-selector'>
                 <CreatableSelect
                   autoFocus
-                  classNamePrefix="mySelect"
                   isClearable
                   isMulti
-                  defaultValue={[]}
                   name="labels"
                   onChange={this.handleChange}
                   options={labels.map(l => ({ label: l.name, value: l.id }))}
