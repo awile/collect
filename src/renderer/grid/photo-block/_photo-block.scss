@@ -52,4 +52,11 @@
       display: flex;
     }
   }
+
+  &-labels {
+    text-transform: uppercase;
+    .ant-tag {
+      font-size: 12px;
+    }
+  }
 }

@@ -236,9 +236,9 @@ class Grid extends Component {
           { selectedPhotos.length > 0 &&
             <React.Fragment>
               <div className='clt-Grid-select-info'>
-                <span>{`${selectedPhotos.length} photos selected`}</span>
+                <span>{`${selectedPhotos.length} photo${selectedPhotos.length === 1 ? '' : 's'} selected`}</span>
                 <Button type="link" onClick={() => this.setState({ selectedPhotos: [] })}>
-                  deselect all
+                  Deselect All
                 </Button>
               </div>
               <div className='clt-Grid-options-selector'>
@@ -290,7 +290,7 @@ class Grid extends Component {
                   Add Labels
                 </Button>
                 <Popconfirm
-                  title='Are you sure you want to delete this photo'
+                  title='Are you sure you want to delete this photo?'
                   onConfirm={this.handlePhotosDelete}
                   okText='Delete'
                   cancelText='Cancel'>

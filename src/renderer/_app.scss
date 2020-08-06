@@ -2,10 +2,20 @@
 @import "~antd/dist/antd";
 @import '~react-virtualized/styles';
 
+@font-face {
+  font-family: sweet-sans;
+  src: url('../assets/font/SweetSansProRegular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: sweet-sans-bold;
+  src: url('../assets/font/SweetSansProHeavy.otf') format('opentype');
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-family: sweet-sans,Helvetica Neue,Helvetica,Arial,sans-serif;
 }
 
 .clt-App {

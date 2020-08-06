@@ -9,6 +9,8 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    text-transform: uppercase;
+    font-size: 12px;
   }
 
   &-list-container {
@@ -24,6 +26,7 @@
 
   &-name {
     width: 100%;
+    text-transform: uppercase;
   }
 
   &-item {

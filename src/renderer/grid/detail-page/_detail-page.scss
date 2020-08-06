@@ -47,8 +47,10 @@
       flex-direction: row;
       flex-wrap: wrap;
       margin-top: 10px;
+      text-transform: uppercase;
       .ant-tag {
         margin-top: 5px;
+        font-size: 12px;
       }
     }
   }
@@ -62,5 +64,14 @@
       justify-content: space-between;
       width: 100%;
     }
+  }
+
+  &-add-labels .select__value-container {
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  &-add-labels .select__option {
+    text-transform: uppercase;
+    font-size: 12px;
   }
 }

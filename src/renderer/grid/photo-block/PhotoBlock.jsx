@@ -163,6 +163,7 @@ class PhotoBlock extends Component {
             width={800}
             visible={detailIsVisible}
             onCancel={() => this.setState({ detailIsVisible: false })}
+            okText='Ok'
             onOk={() => this.setState({ detailIsVisible: false })}>
                 <DetailPage
                   photoId={photo.id}

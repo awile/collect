@@ -131,7 +131,7 @@ function DetailPage({ photoId, setLabels, labels, onRemove, onDelete}) {
                 </Button>
                 <Popconfirm
                   placement='top'
-                  title='Are you sure you want to delete this photo'
+                  title='Are you sure you want to delete this photo?'
                   onConfirm={() => onDelete(photo.id)}
                   okText='Delete'
                   cancelText='Cancel'>

@@ -6,6 +6,11 @@
   padding: 0 !important;
 }
 
+.ant-select-dropdown .ant-select-item-option-content {
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
 .clt-NavBar {
   width: 100%;
   border-bottom: solid 1px #d3d3d3;
@@ -14,7 +19,7 @@
   position: fixed;
   z-index: 1;
   line-height: 40px;
-  background: #fff;
+  background: #EFEDEC !important;
   padding: 0;
   -webkit-app-region: drag;
 
@@ -28,6 +33,9 @@
 
   &-title {
     margin-left: 100px;
+    font-family: sweet-sans-bold;
+    letter-spacing: 0.1em;
+    font-size: 18px;
   }
 
   &-divider {
@@ -40,6 +48,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: uppercase;
   }
 
   &-search-bar {
@@ -52,10 +61,15 @@
   }
   ::-webkit-input-placeholder {
     text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
   }
 
   .ant-input-search {
     height: 20px;
+    span {
+      text-transform: uppercase;
+    }
   }
 
   .ant-input-search:focus-within {
