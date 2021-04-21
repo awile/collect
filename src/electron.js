@@ -4,6 +4,7 @@ import * as path from 'path';
 import { setupApp, setupListeners, teardownListeners } from './main/';
 import { ipcMain } from 'electron'
 import * as url from 'url';
+import { autoUpdater } from 'electron-updater';
 
 function createWindow() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -44,6 +45,10 @@ app.on('ready', () =>  {
   createWindow();
 });
 
+app.on('ready-to-show', () => {
+  autoUpdater.checkForUpdatesAndNotify();
+});
+
 app.whenReady().then(() => {
   protocol.registerFileProtocol('file', (request, callback) => {
     const pathname = request.url.replace('file:///', '');
@@ -55,3 +60,17 @@ app.on('window-all-closed', () => {
   teardownListeners();
   app.quit()
 })
+
+ipcMain.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() });
+});
+
+// autoUpdater.on('update-available', () => {
+//   console.log('Update Available');
+//   mainWindow.webContents.send('update_available');
+// });
+// autoUpdater.on('update-downloaded', () => {
+//   console.log('Update downloaded');
+//   mainWindow.webContents.send('update_downloaded');
+// });
+

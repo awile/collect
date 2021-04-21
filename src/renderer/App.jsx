@@ -40,7 +40,14 @@ function App() {
         }
       });
       IPCRenderer.send(statusCheckChannel, []);
+      IPCRenderer.on('app_version', (_, arg) => {
+        console.log('version', arg)
+      });
+      IPCRenderer.send('app_version');
     }
+    IPCRenderer.once('update_available', (e, arg) => {
+      console.log('update available', arg)
+    });
   });
 
   return (
